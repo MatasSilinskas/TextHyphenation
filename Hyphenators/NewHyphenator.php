@@ -80,6 +80,8 @@ class NewHyphenator implements HyphenatorInterface
             }
 
             krsort($data);
+            unset($data[0]);
+            unset($data[strlen($word) - 1]);
 //        print_r($data);
             foreach ($data as $key => $value) {
                 if ($value % 2 !== 0) {
