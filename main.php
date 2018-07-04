@@ -11,7 +11,7 @@ spl_autoload_register(function ($className) {
 });
 
 $patternsProvider = new PatternsProvider();
-$hyphenator = new NewHyphenator($patternsProvider);
+$hyphenator = new NewHyphenator($patternsProvider->getData());
 $timer = new Timer();
 
 $console = new Console($hyphenator, $timer);
