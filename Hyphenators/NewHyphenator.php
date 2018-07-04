@@ -5,7 +5,7 @@ namespace Hyphenators;
 class NewHyphenator implements HyphenatorInterface
 {
     private $patterns = [];
-    const NUMBERS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+    private const NUMBERS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
     private static $numberOfInstances = 0;
 
     /**
@@ -71,12 +71,13 @@ class NewHyphenator implements HyphenatorInterface
     private function filterPatterns(string $word) : array
     {
         $letters = str_split($word);
-        $patterns = array_intersect_key($this->patterns, array_flip(array_unique($letters)));
         $filteredPatterns = [];
         for ($i = 0; $i < count($letters) - 1; $i++) {
-            if (isset($patterns[$letters[$i]][$letters[$i + 1]])) {
-                $filteredPatterns[] = $patterns[$letters[$i]][$letters[$i + 1]];
-                unset($patterns[$letters[$i]][$letters[$i + 1]]);
+            if (
+                isset($this->patterns[$letters[$i]][$letters[$i + 1]]) &&
+                !in_array($this->patterns[$letters[$i]][$letters[$i + 1]], $filteredPatterns)
+            ) {
+                $filteredPatterns[] = $this->patterns[$letters[$i]][$letters[$i + 1]];
             }
         }
 
