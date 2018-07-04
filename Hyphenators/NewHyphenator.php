@@ -8,6 +8,7 @@ class NewHyphenator implements HyphenatorInterface
 {
     private $patterns = [];
     const NUMBERS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+    private static $numberOfInstances = 0;
 
     /**
      * Hyphenator constructor.
@@ -19,6 +20,7 @@ class NewHyphenator implements HyphenatorInterface
         foreach ($patternsProvider->getData() as $pattern) {
             $this->patterns[str_replace($adjacent, '', $pattern)[0]][str_replace($adjacent, '', $pattern)[1]][] = $pattern;
         }
+        self::$numberOfInstances++;
     }
 
     /**
@@ -87,5 +89,21 @@ class NewHyphenator implements HyphenatorInterface
         }
 
         return $word;
+    }
+
+    /**
+     * @return int
+     */
+    public static function getNumberOfInstances(): int
+    {
+        return self::$numberOfInstances;
+    }
+
+    /**
+     * @param int $numberOfInstances
+     */
+    public static function setNumberOfInstances(int $numberOfInstances): void
+    {
+        self::$numberOfInstances = $numberOfInstances;
     }
 }
