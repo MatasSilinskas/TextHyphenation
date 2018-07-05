@@ -5,6 +5,14 @@ class Psr4AutoloaderClass
 {
     protected $prefixes = array();
 
+    /**
+     * Psr4AutoloaderClass constructor.
+     */
+    public function __construct()
+    {
+        require_once 'vendor/autoload.php';
+    }
+
     public function register()
     {
         spl_autoload_register(array($this, 'loadClass'));
@@ -129,18 +137,6 @@ class Psr4AutoloaderClass
         $this->addNamespace(
             'TextHyphenation\Timer',
             __DIR__ . '/Timer/'
-        );
-        $this->addNamespace(
-            'Monolog',
-            __DIR__ . '/vendor/monolog/monolog/src/Monolog/'
-        );
-        $this->addNamespace(
-            'Monolog',
-            __DIR__ . '/vendor/monolog/monolog/src/Monolog/'
-        );
-        $this->addNamespace(
-            'Psr\Log',
-            __DIR__ . '/vendor/psr/log/Psr/Log/'
         );
     }
 }
