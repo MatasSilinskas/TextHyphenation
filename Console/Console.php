@@ -29,7 +29,7 @@ class Console
         $option = $this->getConsoleInput();
         if ($option === 'yourself') {
             $this->takeInputFromUser();
-        } else {
+        } elseif ($option === 'file' || $option === '') {
             $this->takeInputFromFile();
         }
     }
@@ -64,7 +64,6 @@ class Console
         $wordsProvider = new WordsProvider();
         $words = $wordsProvider->getData();
 
-        $i = 0;
         $result = [];
         $this->timer->start();
         foreach ($words as $word) {
@@ -75,7 +74,10 @@ class Console
         echo 'The process took ' . $this->timer->getDifference() . " seconds\nWritting to file...";
 
         $rezultFile = new SplFileObject('result.txt', 'w');
-        $written = $rezultFile->fwrite(implode("\n", $result));
+        if ($rezultFile->fwrite(implode("\n", $result) === 0)) {
+            echo 'Somethign went wrong...';
+            return;
+        }
         echo ' Done!';
     }
 }

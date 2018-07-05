@@ -50,18 +50,19 @@ class Hyphenator implements HyphenatorInterface
                         }
                     }
                 }
-            } else {
-                $lastPos = 0;
-                while (($lastPos = strpos($word, $needle, $lastPos)) !== false) {
-                    foreach ($matches as $number) {
+                continue;
+            }
+
+            $lastPos = 0;
+            while (($lastPos = strpos($word, $needle, $lastPos)) !== false) {
+                foreach ($matches as $number) {
 //                        echo $pattern . "\n";
-                        $numPos = strpos($pattern, $number);
-                        if (!isset($data[$lastPos + $numPos]) || $data[$lastPos + $numPos] < $number) {
-                            $data[$lastPos + $numPos] = $number;
-                        }
+                    $numPos = strpos($pattern, $number);
+                    if (!isset($data[$lastPos + $numPos]) || $data[$lastPos + $numPos] < $number) {
+                        $data[$lastPos + $numPos] = $number;
                     }
-                    $lastPos = $lastPos + strlen($needle);
                 }
+                $lastPos = $lastPos + strlen($needle);
             }
         }
 

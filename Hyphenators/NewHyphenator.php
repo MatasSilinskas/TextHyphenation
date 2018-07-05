@@ -105,9 +105,11 @@ class NewHyphenator implements HyphenatorInterface
             ) {
                 $this->putHyphenPositionForEndDotPattern($numbers, $pattern, $data, $word);
             }
-        } else {
-            $this->putHyphenPositionForNormalPattern($numbers, $pattern, $data, $word, $needle);
+
+            return;
         }
+
+        $this->putHyphenPositionForNormalPattern($numbers, $pattern, $data, $word, $needle);
     }
 
     /**
