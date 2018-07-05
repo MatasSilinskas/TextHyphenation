@@ -1,11 +1,11 @@
 <?php
 
-namespace Console;
+namespace TextHyphenation\Console;
 
-use DataProviders\WordsProvider;
-use Hyphenators\HyphenatorInterface;
 use SplFileObject;
-use Timer\Timer;
+use TextHyphenation\DataProviders\WordsProvider;
+use TextHyphenation\Hyphenators\HyphenatorInterface;
+use TextHyphenation\Timer\Timer;
 
 class Console
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace DataProviders;
+namespace TextHyphenation\DataProviders;
 
 class PatternsProvider extends FileProvider
 {

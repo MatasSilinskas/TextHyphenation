@@ -1,17 +1,23 @@
 <?php
 
-use Console\Console;
-use DataProviders\PatternsProvider;
-use Hyphenators\Hyphenator;
-use Timer\Timer;
+require_once 'Psr4Autoloader.php';
 
-spl_autoload_register(function ($className) {
-    $className = str_replace('\\', DIRECTORY_SEPARATOR, $className);
-    require_once __DIR__ . DIRECTORY_SEPARATOR . $className . '.php';
-});
+use Loader\Psr4AutoloaderClass;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
+use TextHyphenation\Console\Console;
+use TextHyphenation\DataProviders\PatternsProvider;
+use TextHyphenation\Hyphenators\Hyphenator;
+use TextHyphenation\Timer\Timer;
 
+$loader = new Psr4AutoloaderClass();
+$loader->register();
+$loader->addRequiredNamespaces();
+
+$logger = new Logger('Hyphenator');
+$logger->pushHandler(new StreamHandler('hyphenator.log'));
 $patternsProvider = new PatternsProvider();
-$hyphenator = new Hyphenator($patternsProvider->getData());
+$hyphenator = new Hyphenator($patternsProvider->getData(), $logger);
 $timer = new Timer();
 
 $console = new Console($hyphenator, $timer);

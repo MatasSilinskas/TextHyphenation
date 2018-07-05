@@ -1,6 +1,6 @@
 <?php
 
-namespace Hyphenators;
+namespace TextHyphenation\Hyphenators;
 
 interface HyphenatorInterface
 {

@@ -1,6 +1,8 @@
 {
     "require": {
-        "squizlabs/php_codesniffer": "*"
+        "squizlabs/php_codesniffer": "*",
+        "psr/log": "dev-master",
+        "monolog/monolog": "^1.23"
     },
     "require-dev": {
         "phpmd/phpmd" : "@stable"

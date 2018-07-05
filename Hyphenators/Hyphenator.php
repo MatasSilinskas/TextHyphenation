@@ -1,10 +1,13 @@
 <?php
 
-namespace Hyphenators;
+namespace TextHyphenation\Hyphenators;
+
+use Psr\Log\LoggerInterface;
 
 class Hyphenator implements HyphenatorInterface
 {
     private $patterns = [];
+    private $logger;
     private const NUMBERS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
     private static $numberOfInstances = 0;
 
@@ -12,8 +15,9 @@ class Hyphenator implements HyphenatorInterface
      * Hyphenator constructor.
      * @param array $patterns
      */
-    public function __construct(array $patterns)
+    public function __construct(array $patterns, LoggerInterface $logger)
     {
+        $this->logger = $logger;
         $this->constructPatterns($patterns);
         self::$numberOfInstances++;
     }
@@ -25,16 +29,18 @@ class Hyphenator implements HyphenatorInterface
     public function hyphenate(string $word) : string
     {
         $filteredPatterns = $this->filterPatterns($word);
+        $hyphenated = $word;
         if (!empty($filteredPatterns)) {
             $hyphenPositions = [];
             foreach (array_merge(...$filteredPatterns) as $pattern) {
                 $this->putHyphenPosition($hyphenPositions, $word, $pattern);
             }
 
-            $word = $this->addHyphens($hyphenPositions, $word);
+            $hyphenated = $this->addHyphens($hyphenPositions, $word);
         }
 
-        return $word;
+        $this->logger->info("$word was hyphenated to $hyphenated");
+        return $hyphenated;
     }
 
     /**

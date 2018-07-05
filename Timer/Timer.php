@@ -1,6 +1,6 @@
 <?php
 
-namespace Timer;
+namespace TextHyphenation\Timer;
 
 use Exception;
 
