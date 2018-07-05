@@ -14,8 +14,7 @@ class ProviderFactory
         $dataType = strtolower($dataType);
         if ($dataType === 'patterns') {
             return new PatternsProvider();
-        }
-        elseif ($dataType === 'words') {
+        } elseif ($dataType === 'words') {
             return new WordsProvider();
         }
 

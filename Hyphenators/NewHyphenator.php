@@ -60,7 +60,9 @@ class NewHyphenator implements HyphenatorInterface
     {
         $adjacent = array_merge(self::NUMBERS, ['.']);
         foreach ($patterns as $pattern) {
-            $this->patterns[str_replace($adjacent, '', $pattern)[0]][str_replace($adjacent, '', $pattern)[1]][] = $pattern;
+            $firstLetter = str_replace($adjacent, '', $pattern)[0];
+            $secondLetter = str_replace($adjacent, '', $pattern)[1];
+            $this->patterns[$firstLetter][$secondLetter][] = $pattern;
         }
     }
 
@@ -73,8 +75,7 @@ class NewHyphenator implements HyphenatorInterface
         $letters = str_split($word);
         $filteredPatterns = [];
         for ($i = 0; $i < count($letters) - 1; $i++) {
-            if (
-                isset($this->patterns[$letters[$i]][$letters[$i + 1]]) &&
+            if (isset($this->patterns[$letters[$i]][$letters[$i + 1]]) &&
                 !in_array($this->patterns[$letters[$i]][$letters[$i + 1]], $filteredPatterns)
             ) {
                 $filteredPatterns[] = $this->patterns[$letters[$i]][$letters[$i + 1]];
@@ -99,8 +100,7 @@ class NewHyphenator implements HyphenatorInterface
                 substr($needle, 1))
             ) {
                 $this->putHyphenPositionForStartDotPattern($numbers, $pattern, $data);
-            }
-            elseif (substr($word, strlen($word) - strlen($needle) + 1, strlen($word)) ===
+            } elseif (substr($word, strlen($word) - strlen($needle) + 1, strlen($word)) ===
                 substr($needle, 0, -1)
             ) {
                 $this->putHyphenPositionForEndDotPattern($numbers, $pattern, $data, $word);
@@ -150,8 +150,13 @@ class NewHyphenator implements HyphenatorInterface
      * @param string $word
      * @param string $needle
      */
-    private function putHyphenPositionForNormalPattern(array $numbers, string $pattern, array &$data, string $word, string $needle)
-    {
+    private function putHyphenPositionForNormalPattern(
+        array $numbers,
+        string $pattern,
+        array &$data,
+        string $word,
+        string $needle
+    ) {
         $lastPos = 0;
         while (($lastPos = strpos($word, $needle, $lastPos)) !== false) {
             foreach ($numbers as $number) {

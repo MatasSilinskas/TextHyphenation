@@ -39,10 +39,9 @@ class Hyphenator implements HyphenatorInterface
                             $data[$numPos - 1] = $number;
                         }
                     }
-                }
-
-                //dot at the end
-                elseif (substr($word, strlen($word) - strlen($needle) + 1, strlen($word)) === substr($needle, 0, -1)) {
+                } elseif (substr($word, strlen($word) - strlen($needle) + 1, strlen($word)) ===
+                    substr($needle, 0, -1)
+                ) {
                     foreach ($matches as $number) {
 //                        echo $pattern . "\n";
                         $numPos = strlen($word) - strpos($pattern, $number);
@@ -51,8 +50,7 @@ class Hyphenator implements HyphenatorInterface
                         }
                     }
                 }
-            }
-            else {
+            } else {
                 $lastPos = 0;
                 while (($lastPos = strpos($word, $needle, $lastPos)) !== false) {
                     foreach ($matches as $number) {
