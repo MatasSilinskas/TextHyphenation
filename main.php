@@ -2,7 +2,7 @@
 
 use Console\Console;
 use DataProviders\PatternsProvider;
-use Hyphenators\NewHyphenator;
+use Hyphenators\Hyphenator;
 use Timer\Timer;
 
 spl_autoload_register(function ($className) {
@@ -11,7 +11,7 @@ spl_autoload_register(function ($className) {
 });
 
 $patternsProvider = new PatternsProvider();
-$hyphenator = new NewHyphenator($patternsProvider->getData());
+$hyphenator = new Hyphenator($patternsProvider->getData());
 $timer = new Timer();
 
 $console = new Console($hyphenator, $timer);
