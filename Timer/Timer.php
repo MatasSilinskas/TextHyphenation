@@ -7,7 +7,7 @@ use Exception;
 class Timer
 {
     private $start;
-    private $timePost;
+    private $stop;
 
     public function start()
     {
@@ -16,12 +16,12 @@ class Timer
 
     public function stop()
     {
-        $this->timePost = microtime(true);
+        $this->stop = microtime(true);
     }
 
     public function reset()
     {
-        $this->timePost = null;
+        $this->stop = null;
         $this->start = null;
     }
 
@@ -35,9 +35,14 @@ class Timer
             throw new Exception('Timer hasn`t been started!');
         }
 
-        if ($this->timePost === null) {
+        if ($this->stop === null) {
             throw new Exception('Timer hasn`t been stopped!');
         }
-        return $this->timePost - $this->start;
+
+        if (abs(($this->stop - $this->start)/$this->start) < 0.00000000000001) {
+            return 0;
+        }
+
+        return $this->stop - $this->start;
     }
 }
