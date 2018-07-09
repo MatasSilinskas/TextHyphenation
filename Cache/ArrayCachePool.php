@@ -66,9 +66,15 @@ class ArrayCachePool implements CacheInterface
     public function getMultiple(iterable $keys, $default = null): iterable
     {
         $this->validateKeys($keys);
-        return array_map(function ($key, $default) {
-            return $this->get($key, $default);
-        }, $keys, $default);
+        $values = [];
+        foreach ($keys as $key) {
+            if (isset($this->pool[$key])) {
+                $values[$key] = $this->pool[$key];
+                continue;
+            }
+            $values[$key] = $default;
+        }
+        return $values;
     }
 
     /**
@@ -100,6 +106,7 @@ class ArrayCachePool implements CacheInterface
         foreach ($keys as $key) {
             $this->delete($key);
         }
+        return true;
     }
 
     /**
