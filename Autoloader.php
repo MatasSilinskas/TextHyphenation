@@ -14,6 +14,10 @@ class Autoloader
         spl_autoload_register(array($this, 'loadClass'));
     }
 
+    /**
+     * @param string $class
+     * @return bool|string
+     */
     private function loadClass(string $class)
     {
         $nameSpaces = explode("\\", $class);
@@ -31,6 +35,10 @@ class Autoloader
         return false;
     }
 
+    /**
+     * @param string $prefix
+     * @param string $directory
+     */
     public function addNameSpace(string $prefix, string $directory)
     {
         $this->directories[$prefix][] = $directory;
