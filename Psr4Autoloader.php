@@ -24,10 +24,6 @@ class Psr4AutoloaderClass
      * @param string $prefix   The namespace prefix.
      * @param string $baseDir A base directory for class files in the
      *                         namespace.
-     * @param bool   $prepend  If true, prepend the base directory to the stack
-     *                         instead of appending it; this causes it to be
-     *                         searched first rather than last.
-     *
      * @return void
      */
     public function addNamespace($prefix, $baseDir)
@@ -131,6 +127,10 @@ class Psr4AutoloaderClass
         $this->addNamespace(
             'TextHyphenation\Timer',
             __DIR__ . '/Timer/'
+        );
+        $this->addNamespace(
+            'TextHyphenation\Logger',
+            __DIR__ . '/Logger/'
         );
     }
 }

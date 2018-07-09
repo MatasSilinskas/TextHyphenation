@@ -2,7 +2,7 @@
 
 namespace TextHyphenation\Hyphenators;
 
-use Psr\Log\LoggerInterface;
+use TextHyphenation\Logger\LoggerInterface;
 use Psr\SimpleCache\CacheInterface;
 
 class CachingHyphenator extends Hyphenator implements HyphenatorInterface

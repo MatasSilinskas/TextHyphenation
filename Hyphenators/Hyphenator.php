@@ -2,7 +2,8 @@
 
 namespace TextHyphenation\Hyphenators;
 
-use Psr\Log\LoggerInterface;
+
+use TextHyphenation\Logger\LoggerInterface;
 
 class Hyphenator implements HyphenatorInterface
 {
@@ -14,6 +15,7 @@ class Hyphenator implements HyphenatorInterface
     /**
      * Hyphenator constructor.
      * @param array $patterns
+     * @param LoggerInterface $logger
      */
     public function __construct(array $patterns, LoggerInterface $logger)
     {
@@ -39,7 +41,9 @@ class Hyphenator implements HyphenatorInterface
             $hyphenated = $this->addHyphens($hyphenPositions, $word);
         }
 
-        $this->logger->info("$word was hyphenated to $hyphenated");
+        if ($hyphenated === $word) {
+            $this->logger->warning("Hyhphenated form of the word $word is equal to it`s original form.");
+        }
         return $hyphenated;
     }
 
