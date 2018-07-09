@@ -2,7 +2,6 @@
 
 namespace TextHyphenation\Hyphenators;
 
-
 use TextHyphenation\Logger\LoggerInterface;
 
 class Hyphenator implements HyphenatorInterface

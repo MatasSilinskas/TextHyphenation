@@ -2,7 +2,6 @@
 
 namespace TextHyphenation\Logger;
 
-
 use SplFileObject;
 
 class FileLogger implements LoggerInterface

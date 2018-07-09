@@ -67,5 +67,4 @@ interface LoggerInterface
      * @return void
      */
     public function log($level, string $message, array $context = array());
-
 }

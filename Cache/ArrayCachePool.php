@@ -2,7 +2,6 @@
 
 namespace TextHyphenation\Cache;
 
-
 class ArrayCachePool implements CacheInterface
 {
     private $pool = [];
