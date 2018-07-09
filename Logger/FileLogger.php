@@ -17,92 +17,92 @@ class FileLogger implements LoggerInterface
         $this->file = new SplFileObject($fileName, 'a');
     }
     /**
-     * @param $message
+     * @param string $message
      * @param array $context
      * @return void
      */
-    public function emergency($message, array $context = array())
+    public function emergency(string $message, array $context = array())
     {
         $this->log(LogLevel::EMERGENCY, $message, $context);
     }
 
     /**
-     * @param $message
+     * @param string $message
      * @param array $context
      * @return void
      */
-    public function alert($message, array $context = array())
+    public function alert(string $message, array $context = array())
     {
         $this->log(LogLevel::ALERT, $message, $context);
     }
 
     /**
-     * @param $message
+     * @param string $message
      * @param array $context
      * @return void
      */
-    public function critical($message, array $context = array())
+    public function critical(string $message, array $context = array())
     {
         $this->log(LogLevel::CRITICAL, $message, $context);
     }
 
     /**
-     * @param $message
+     * @param string $message
      * @param array $context
      * @return void
      */
-    public function error($message, array $context = array())
+    public function error(string $message, array $context = array())
     {
         $this->log(LogLevel::ERROR, $message, $context);
     }
 
     /**
-     * @param $message
+     * @param string $message
      * @param array $context
      * @return void
      */
-    public function warning($message, array $context = array())
+    public function warning(string $message, array $context = array())
     {
         $this->log(LogLevel::WARNING, $message, $context);
     }
 
     /**
-     * @param $message
+     * @param string $message
      * @param array $context
      * @return void
      */
-    public function notice($message, array $context = array())
+    public function notice(string $message, array $context = array())
     {
         $this->log(LogLevel::NOTICE, $message, $context);
     }
 
     /**
-     * @param $message
+     * @param string $message
      * @param array $context
      * @return void
      */
-    public function info($message, array $context = array())
+    public function info(string $message, array $context = array())
     {
         $this->log(LogLevel::INFO, $message, $context);
     }
 
     /**
-     * @param $message
+     * @param string $message
      * @param array $context
      * @return void
      */
-    public function debug($message, array $context = array())
+    public function debug(string $message, array $context = array())
     {
         $this->log(LogLevel::DEBUG, $message, $context);
     }
 
     /**
-     * @param $level
-     * @param $message
+     * @param mixed $level
+     * @param string $message
      * @param array $context
      * @return void
      */
-    public function log($level, $message, array $context = array())
+    public function log($level, string $message, array $context = array())
     {
         $this->file->fwrite('[' . date('Y M d') . '] ' . strtoupper($level) . ": $message\n");
     }
