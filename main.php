@@ -14,7 +14,8 @@ use TextHyphenation\Timer\Timer;
 $loader = new Autoloader();
 $loader->addRequiredNamespaces();
 
-$logger = new FileLogger('hyphenator.log');
+$ini = parse_ini_file('config.ini');
+$logger = new FileLogger($ini['hyphenator']);
 $cache = new ArrayCachePool();
 
 $patternsProvider = new PatternsProvider();
