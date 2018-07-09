@@ -5,14 +5,6 @@ class Psr4AutoloaderClass
 {
     protected $prefixes = array();
 
-    /**
-     * Psr4AutoloaderClass constructor.
-     */
-    public function __construct()
-    {
-        require_once 'vendor/autoload.php';
-    }
-
     public function register()
     {
         spl_autoload_register(array($this, 'loadClass'));
@@ -131,6 +123,10 @@ class Psr4AutoloaderClass
         $this->addNamespace(
             'TextHyphenation\Logger',
             __DIR__ . '/Logger/'
+        );
+        $this->addNamespace(
+            'TextHyphenation\Cache',
+            __DIR__ . '/Cache/'
         );
     }
 }

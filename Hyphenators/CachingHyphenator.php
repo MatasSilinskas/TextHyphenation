@@ -2,8 +2,8 @@
 
 namespace TextHyphenation\Hyphenators;
 
+use TextHyphenation\Cache\CacheInterface;
 use TextHyphenation\Logger\LoggerInterface;
-use Psr\SimpleCache\CacheInterface;
 
 class CachingHyphenator extends Hyphenator implements HyphenatorInterface
 {

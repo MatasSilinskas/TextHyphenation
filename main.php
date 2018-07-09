@@ -2,8 +2,8 @@
 
 require_once 'Psr4Autoloader.php';
 
-use Cache\Adapter\PHPArray\ArrayCachePool;
 use Loader\Psr4AutoloaderClass;
+use TextHyphenation\Cache\ArrayCachePool;
 use TextHyphenation\Console\Console;
 use TextHyphenation\DataProviders\PatternsProvider;
 use TextHyphenation\Hyphenators\CachingHyphenator;
