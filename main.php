@@ -1,8 +1,8 @@
 <?php
 
-require_once 'Psr4Autoloader.php';
+require_once 'Autoloader.php';
 
-use Loader\Psr4AutoloaderClass;
+use Loader\Autoloader;
 use TextHyphenation\Cache\ArrayCachePool;
 use TextHyphenation\Console\Console;
 use TextHyphenation\DataProviders\PatternsProvider;
@@ -11,8 +11,7 @@ use TextHyphenation\Hyphenators\Hyphenator;
 use TextHyphenation\Logger\FileLogger;
 use TextHyphenation\Timer\Timer;
 
-$loader = new Psr4AutoloaderClass();
-$loader->register();
+$loader = new Autoloader();
 $loader->addRequiredNamespaces();
 
 $logger = new FileLogger('hyphenator.log');
