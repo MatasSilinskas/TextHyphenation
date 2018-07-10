@@ -24,23 +24,33 @@ class Hyphenator implements HyphenatorInterface
     }
 
     /**
-     * @param string $word
+     * @param string $sentence
      * @return string
      */
-    public function hyphenate(string $word) : string
+    public function hyphenate(string $sentence) : string
     {
-        $filteredPatterns = $this->filterPatterns($word);
-        $hyphenPositions = [];
-        foreach ($filteredPatterns as $pattern) {
-            $this->putHyphenPosition($hyphenPositions, $word, $pattern);
-        }
+//        $words = explode(' ', $sentence);
+//        $sentence = preg_quote($sentence, '');
+        $words = array_filter(preg_split('#(\W+)#', $sentence));
+        $separators = preg_split('#(\w+)#', $sentence);
+        array_shift($separators);
+        $hyphenatedSentence = '';
+        foreach ($words as $word) {
+            $filteredPatterns = $this->filterPatterns($word);
+            $hyphenPositions = [];
+            foreach ($filteredPatterns as $pattern) {
+                $this->putHyphenPosition($hyphenPositions, $word, $pattern);
+            }
 
-        $hyphenated = $this->addHyphens($hyphenPositions, $word);
+            $hyphenated = $this->addHyphens($hyphenPositions, $word);
 
-        if ($hyphenated === $word) {
-            $this->logger->warning("Hyhphenated form of the word $word is equal to it`s original form.");
+            if ($hyphenated === $word) {
+                $this->logger->warning("Hyhphenated form of the word $word is equal to it`s original form.");
+            }
+
+            $hyphenatedSentence .= $hyphenated . array_shift($separators);
         }
-        return $hyphenated;
+        return $hyphenatedSentence;
     }
 
     /**
