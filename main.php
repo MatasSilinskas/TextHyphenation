@@ -12,17 +12,17 @@ use TextHyphenation\Hyphenators\RegexHyphenator;
 use TextHyphenation\Logger\FileLogger;
 use TextHyphenation\Timer\Timer;
 
-$loader = new Autoloader();
-$loader->addRequiredNamespaces();
+$config = include 'config.php';
 
-$ini = parse_ini_file('config.ini');
-$logger = new FileLogger($ini['hyphenator']);
-$cache = new ArrayCachePool();
+$loader = new Autoloader;
+$loader->addNameSpaces($config['namespaces']);
+$logger = new FileLogger($config['hyphenator']);
 
-$patternsProvider = new PatternsProvider();
+$cache = new ArrayCachePool;
+$patternsProvider = new PatternsProvider;
 
 $hyphenator = new RegexHyphenator($patternsProvider->getData(), $logger);
-$timer = new Timer();
+$timer = new Timer;
 
 $console = new Console($hyphenator, $timer);
 $console->execute();

@@ -44,35 +44,10 @@ class Autoloader
         $this->directories[$prefix][] = $directory;
     }
 
-    public function addRequiredNamespaces()
+    public function addNameSpaces(array $namespaces)
     {
-        $this->addNamespace(
-            'TextHyphenation\Console',
-            __DIR__ . '/Console/'
-        );
-        $this->addNamespace(
-            'TextHyphenation\DataProviders',
-            __DIR__ . '/DataProviders/'
-        );
-        $this->addNamespace(
-            'TextHyphenation\Hyphenators',
-            __DIR__ . '/Hyphenators/'
-        );
-        $this->addNamespace(
-            'TextHyphenation\Timer',
-            __DIR__ . '/Timer/'
-        );
-        $this->addNamespace(
-            'TextHyphenation\Logger',
-            __DIR__ . '/Logger/'
-        );
-        $this->addNamespace(
-            'TextHyphenation\Cache',
-            __DIR__ . '/Cache/'
-        );
-        $this->addNamespace(
-            'TextHyphenation\Email',
-            __DIR__ . '/Email/'
-        );
+        foreach ($namespaces as $key => $value) {
+            $this->addNameSpace($key, __DIR__ . DIRECTORY_SEPARATOR . $value);
+        }
     }
 }
