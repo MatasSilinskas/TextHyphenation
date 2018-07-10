@@ -23,7 +23,7 @@ class Console
         $this->timer = $timer;
     }
 
-    public function execute()
+    public function execute() : void
     {
         echo 'Would you like to hyphenate words from file or enter them yourself?[FILE/yourself]';
         $option = $this->getConsoleInput();
@@ -34,12 +34,15 @@ class Console
         }
     }
 
+    /**
+     * @return string
+     */
     private function getConsoleInput() : string
     {
         return substr(fgets(STDIN), 0, -1);
     }
 
-    private function takeInputFromUser()
+    private function takeInputFromUser() : void
     {
         while (true) {
             echo 'Enter a word you want to hyphenate (or enter :exit to leave): ';
@@ -58,7 +61,7 @@ class Console
         }
     }
 
-    private function takeInputFromFile()
+    private function takeInputFromFile() : void
     {
         echo "Working on it...\n";
         $wordsProvider = new WordsProvider();

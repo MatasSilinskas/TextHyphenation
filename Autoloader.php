@@ -39,12 +39,12 @@ class Autoloader
      * @param string $prefix
      * @param string $directory
      */
-    public function addNameSpace(string $prefix, string $directory)
+    public function addNameSpace(string $prefix, string $directory) : void
     {
         $this->directories[$prefix][] = $directory;
     }
 
-    public function addNameSpaces(array $namespaces)
+    public function addNameSpaces(array $namespaces) : void
     {
         foreach ($namespaces as $key => $value) {
             $this->addNameSpace($key, __DIR__ . DIRECTORY_SEPARATOR . $value);

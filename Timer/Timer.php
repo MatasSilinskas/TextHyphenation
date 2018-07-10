@@ -9,17 +9,17 @@ class Timer
     private $start;
     private $stop;
 
-    public function start()
+    public function start() : void
     {
         $this->start = microtime(true);
     }
 
-    public function stop()
+    public function stop() : void
     {
         $this->stop = microtime(true);
     }
 
-    public function reset()
+    public function reset() : void
     {
         $this->stop = null;
         $this->start = null;

@@ -3,6 +3,7 @@
 namespace TextHyphenation\Hyphenators;
 
 use TextHyphenation\Cache\CacheInterface;
+use TextHyphenation\Cache\InvalidArgumentException;
 use TextHyphenation\Logger\LoggerInterface;
 
 class CachingHyphenator extends Hyphenator implements HyphenatorInterface
@@ -20,6 +21,11 @@ class CachingHyphenator extends Hyphenator implements HyphenatorInterface
         $this->cache = $cache;
     }
 
+    /**
+     * @param string $word
+     * @return string
+     * @throws InvalidArgumentException
+     */
     public function hyphenate(string $word): string
     {
         if ($this->cache->has($word)) {

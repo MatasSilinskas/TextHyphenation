@@ -15,8 +15,6 @@ class RegexHyphenator extends Hyphenator
         '#[.]$#',
     ];
 
-    private $patterns;
-
     /**
      * RegexHyphenator constructor.
      * @param array $patterns
@@ -27,12 +25,21 @@ class RegexHyphenator extends Hyphenator
         parent::__construct($patterns, $logger);
     }
 
+    /**
+     * @param string $pattern
+     * @return string
+     */
     protected function normalizePattern(string $pattern) : string
     {
         return preg_replace(self::SEARCH_FOR, '', $pattern);
     }
 
-    protected function putHyphenPosition(array &$data, string $word, string $pattern)
+    /**
+     * @param array $data
+     * @param string $word
+     * @param string $pattern
+     */
+    protected function putHyphenPosition(array &$data, string $word, string $pattern) : void
     {
         $needle = $this->normalizePattern($pattern);
         preg_match('#\d+#', $pattern, $numbers);

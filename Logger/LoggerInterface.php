@@ -7,64 +7,55 @@ interface LoggerInterface
     /**
      * @param string $message
      * @param array $context
-     * @return void
      */
-    public function emergency(string $message, array $context = array());
+    public function emergency(string $message, array $context = []) : void;
 
     /**
      * @param string $message
      * @param array $context
-     * @return void
      */
-    public function alert(string $message, array $context = array());
+    public function alert(string $message, array $context = []) : void;
 
     /**
      * @param string $message
      * @param array $context
-     * @return void
      */
-    public function critical(string $message, array $context = array());
+    public function critical(string $message, array $context = []) : void;
 
     /**
      * @param string $message
      * @param array $context
-     * @return void
      */
-    public function error(string $message, array $context = array());
+    public function error(string $message, array $context = []) : void;
 
     /**
      * @param string $message
      * @param array $context
-     * @return void
      */
-    public function warning(string $message, array $context = array());
+    public function warning(string $message, array $context = []) : void;
 
     /**
      * @param string $message
      * @param array $context
-     * @return void
      */
-    public function notice(string $message, array $context = array());
+    public function notice(string $message, array $context = []) : void;
 
     /**
      * @param string $message
      * @param array $context
-     * @return void
      */
-    public function info(string $message, array $context = array());
+    public function info(string $message, array $context = []) : void;
 
     /**
      * @param string $message
      * @param array $context
-     * @return void
      */
-    public function debug(string $message, array $context = array());
+    public function debug(string $message, array $context = []) : void;
 
     /**
      * @param mixed $level
      * @param string $message
      * @param array $context
-     * @return void
      */
-    public function log($level, string $message, array $context = array());
+    public function log($level, string $message, array $context = []) : void;
 }

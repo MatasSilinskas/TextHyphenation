@@ -11,16 +11,20 @@ class FileLogger implements LoggerInterface
      */
     private $file;
 
+    /**
+     * FileLogger constructor.
+     * @param string $fileName
+     */
     public function __construct(string $fileName)
     {
         $this->file = new SplFileObject($fileName, 'a');
     }
+
     /**
      * @param string $message
      * @param array $context
-     * @return void
      */
-    public function emergency(string $message, array $context = array())
+    public function emergency(string $message, array $context = []) : void
     {
         $this->log(LogLevel::EMERGENCY, $message, $context);
     }
@@ -28,9 +32,8 @@ class FileLogger implements LoggerInterface
     /**
      * @param string $message
      * @param array $context
-     * @return void
      */
-    public function alert(string $message, array $context = array())
+    public function alert(string $message, array $context = []) : void
     {
         $this->log(LogLevel::ALERT, $message, $context);
     }
@@ -38,9 +41,8 @@ class FileLogger implements LoggerInterface
     /**
      * @param string $message
      * @param array $context
-     * @return void
      */
-    public function critical(string $message, array $context = array())
+    public function critical(string $message, array $context = []) : void
     {
         $this->log(LogLevel::CRITICAL, $message, $context);
     }
@@ -48,9 +50,8 @@ class FileLogger implements LoggerInterface
     /**
      * @param string $message
      * @param array $context
-     * @return void
      */
-    public function error(string $message, array $context = array())
+    public function error(string $message, array $context = array()) : void
     {
         $this->log(LogLevel::ERROR, $message, $context);
     }
@@ -58,9 +59,8 @@ class FileLogger implements LoggerInterface
     /**
      * @param string $message
      * @param array $context
-     * @return void
      */
-    public function warning(string $message, array $context = array())
+    public function warning(string $message, array $context = []) : void
     {
         $this->log(LogLevel::WARNING, $message, $context);
     }
@@ -68,9 +68,8 @@ class FileLogger implements LoggerInterface
     /**
      * @param string $message
      * @param array $context
-     * @return void
      */
-    public function notice(string $message, array $context = array())
+    public function notice(string $message, array $context = []) : void
     {
         $this->log(LogLevel::NOTICE, $message, $context);
     }
@@ -78,9 +77,8 @@ class FileLogger implements LoggerInterface
     /**
      * @param string $message
      * @param array $context
-     * @return void
      */
-    public function info(string $message, array $context = array())
+    public function info(string $message, array $context = []) : void
     {
         $this->log(LogLevel::INFO, $message, $context);
     }
@@ -88,9 +86,8 @@ class FileLogger implements LoggerInterface
     /**
      * @param string $message
      * @param array $context
-     * @return void
      */
-    public function debug(string $message, array $context = array())
+    public function debug(string $message, array $context = []) : void
     {
         $this->log(LogLevel::DEBUG, $message, $context);
     }
@@ -99,9 +96,8 @@ class FileLogger implements LoggerInterface
      * @param mixed $level
      * @param string $message
      * @param array $context
-     * @return void
      */
-    public function log($level, string $message, array $context = array())
+    public function log($level, string $message, array $context = []) : void
     {
         $this->file->fwrite('[' . date('Y M d') . '] ' . strtoupper($level) . ": $message\n");
     }

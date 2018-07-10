@@ -8,11 +8,18 @@ abstract class FileProvider
 {
     protected $file;
 
+    /**
+     * FileProvider constructor.
+     * @param string $fileName
+     */
     public function __construct(string $fileName)
     {
         $this->file = new SplFileObject($fileName);
     }
 
+    /**
+     * @return array
+     */
     public function getData() : array
     {
         $data = [];

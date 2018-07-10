@@ -29,8 +29,6 @@ class Hyphenator implements HyphenatorInterface
      */
     public function hyphenate(string $sentence) : string
     {
-//        $words = explode(' ', $sentence);
-//        $sentence = preg_quote($sentence, '');
         $words = array_filter(preg_split('#(\W+)#', $sentence));
         $separators = preg_split('#(\w+)#', $sentence);
         array_shift($separators);
@@ -64,7 +62,7 @@ class Hyphenator implements HyphenatorInterface
     /**
      * @param int $numberOfInstances
      */
-    public static function setNumberOfInstances(int $numberOfInstances): void
+    public static function setNumberOfInstances(int $numberOfInstances) : void
     {
         self::$numberOfInstances = $numberOfInstances;
     }
@@ -72,7 +70,7 @@ class Hyphenator implements HyphenatorInterface
     /**
      * @param array $patterns
      */
-    protected function constructPatterns(array $patterns)
+    protected function constructPatterns(array $patterns) : void
     {
         foreach ($patterns as $pattern) {
             $letters = $this->normalizePattern($pattern);
@@ -108,7 +106,7 @@ class Hyphenator implements HyphenatorInterface
      * @param string $word
      * @param string $pattern
      */
-    protected function putHyphenPosition(array &$data, string $word, string $pattern)
+    protected function putHyphenPosition(array &$data, string $word, string $pattern) : void
     {
         $needle = $this->normalizePattern($pattern);
         preg_match('#\d+#', $pattern, $numbers);
@@ -131,7 +129,7 @@ class Hyphenator implements HyphenatorInterface
      * @param string $pattern
      * @param array $data
      */
-    protected function putHyphenPositionForStartDotPattern(array $numbers, string $pattern, array &$data)
+    protected function putHyphenPositionForStartDotPattern(array $numbers, string $pattern, array &$data) : void
     {
         foreach ($numbers as $number) {
             $numPos = strpos($pattern, $number);
@@ -148,7 +146,7 @@ class Hyphenator implements HyphenatorInterface
      * @param array $data
      * @param string $word
      */
-    protected function putHyphenPositionForEndDotPattern(array $numbers, string $pattern, array &$data, string $word)
+    protected function putHyphenPositionForEndDotPattern(array $numbers, string $pattern, array &$data, string $word) : void
     {
         foreach ($numbers as $number) {
             $numPos = strlen($pattern) - strpos($pattern, $number) - 2;
@@ -172,7 +170,7 @@ class Hyphenator implements HyphenatorInterface
         array &$data,
         string $word,
         string $needle
-    ) {
+    ) : void {
         $lastPos = 0;
         while (($lastPos = strpos($word, $needle, $lastPos)) !== false) {
             foreach ($numbers as $number) {
@@ -191,7 +189,7 @@ class Hyphenator implements HyphenatorInterface
      * @param string $word
      * @return string
      */
-    private function addHyphens(array $hyphenPositions, string $word)
+    private function addHyphens(array $hyphenPositions, string $word) : string
     {
         krsort($hyphenPositions);
         unset($hyphenPositions[0]);
