@@ -8,7 +8,7 @@ class Hyphenator implements HyphenatorInterface
 {
     private $patterns = [];
     private $logger;
-    private const NUMBERS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+    private const SEARCH_FOR = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, '.'];
     private static $numberOfInstances = 0;
 
     /**
@@ -30,15 +30,12 @@ class Hyphenator implements HyphenatorInterface
     public function hyphenate(string $word) : string
     {
         $filteredPatterns = $this->filterPatterns($word);
-        $hyphenated = $word;
-        if (!empty($filteredPatterns)) {
-            $hyphenPositions = [];
-            foreach (array_merge(...$filteredPatterns) as $pattern) {
-                $this->putHyphenPosition($hyphenPositions, $word, $pattern);
-            }
-
-            $hyphenated = $this->addHyphens($hyphenPositions, $word);
+        $hyphenPositions = [];
+        foreach ($filteredPatterns as $pattern) {
+            $this->putHyphenPosition($hyphenPositions, $word, $pattern);
         }
+
+        $hyphenated = $this->addHyphens($hyphenPositions, $word);
 
         if ($hyphenated === $word) {
             $this->logger->warning("Hyhphenated form of the word $word is equal to it`s original form.");
@@ -65,13 +62,11 @@ class Hyphenator implements HyphenatorInterface
     /**
      * @param array $patterns
      */
-    private function constructPatterns(array $patterns)
+    protected function constructPatterns(array $patterns)
     {
-        $adjacent = array_merge(self::NUMBERS, ['.']);
         foreach ($patterns as $pattern) {
-            $firstLetter = str_replace($adjacent, '', $pattern)[0];
-            $secondLetter = str_replace($adjacent, '', $pattern)[1];
-            $this->patterns[$firstLetter][$secondLetter][] = $pattern;
+            $letters = $this->normalizePattern($pattern);
+            $this->patterns[$letters[0]][$letters[1]][] = $pattern;
         }
     }
 
@@ -91,7 +86,11 @@ class Hyphenator implements HyphenatorInterface
             }
         }
 
-        return $filteredPatterns;
+        if (!empty($filteredPatterns)) {
+            return array_merge(...$filteredPatterns);
+        }
+
+        return [];
     }
 
     /**
@@ -99,19 +98,15 @@ class Hyphenator implements HyphenatorInterface
      * @param string $word
      * @param string $pattern
      */
-    private function putHyphenPosition(array &$data, string $word, string $pattern)
+    protected function putHyphenPosition(array &$data, string $word, string $pattern)
     {
-        $needle = str_replace(self::NUMBERS, '', $pattern);
+        $needle = $this->normalizePattern($pattern);
         preg_match('#\d+#', $pattern, $numbers);
 
-        if (($dotPos = strpos($needle, '.')) !== false) {
-            if (($dotPos === 0 && substr($word, 0, strlen($needle) - 1) ===
-                substr($needle, 1))
-            ) {
+        if ($dotPos = strpos($pattern, '.')) {
+            if ($dotPos === 0 && substr($word, 0, strlen($needle)) === $needle) {
                 $this->putHyphenPositionForStartDotPattern($numbers, $pattern, $data);
-            } elseif (substr($word, strlen($word) - strlen($needle) + 1, strlen($word)) ===
-                substr($needle, 0, -1)
-            ) {
+            } elseif (substr($word, strlen($word) - strlen($needle)) === $needle) {
                 $this->putHyphenPositionForEndDotPattern($numbers, $pattern, $data, $word);
             }
 
@@ -126,7 +121,7 @@ class Hyphenator implements HyphenatorInterface
      * @param string $pattern
      * @param array $data
      */
-    private function putHyphenPositionForStartDotPattern(array $numbers, string $pattern, array &$data)
+    protected function putHyphenPositionForStartDotPattern(array $numbers, string $pattern, array &$data)
     {
         foreach ($numbers as $number) {
             $numPos = strpos($pattern, $number);
@@ -143,7 +138,7 @@ class Hyphenator implements HyphenatorInterface
      * @param array $data
      * @param string $word
      */
-    private function putHyphenPositionForEndDotPattern(array $numbers, string $pattern, array &$data, string $word)
+    protected function putHyphenPositionForEndDotPattern(array $numbers, string $pattern, array &$data, string $word)
     {
         foreach ($numbers as $number) {
             $numPos = strlen($pattern) - strpos($pattern, $number) - 2;
@@ -161,7 +156,7 @@ class Hyphenator implements HyphenatorInterface
      * @param string $word
      * @param string $needle
      */
-    private function putHyphenPositionForNormalPattern(
+    protected function putHyphenPositionForNormalPattern(
         array $numbers,
         string $pattern,
         array &$data,
@@ -190,7 +185,7 @@ class Hyphenator implements HyphenatorInterface
     {
         krsort($hyphenPositions);
         unset($hyphenPositions[0]);
-        unset($hyphenPositions[strlen($word) - 1]);
+        unset($hyphenPositions[strlen($word)]);
         foreach ($hyphenPositions as $key => $value) {
             if ($value % 2 !== 0) {
                 $word = substr_replace($word, '-', $key, 0);
@@ -198,5 +193,10 @@ class Hyphenator implements HyphenatorInterface
         }
 
         return $word;
+    }
+
+    protected function normalizePattern(string $pattern) : string
+    {
+        return str_replace(self::SEARCH_FOR, '', $pattern);
     }
 }
