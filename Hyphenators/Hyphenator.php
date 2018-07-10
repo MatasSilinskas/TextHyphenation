@@ -146,8 +146,12 @@ class Hyphenator implements HyphenatorInterface
      * @param array $data
      * @param string $word
      */
-    protected function putHyphenPositionForEndDotPattern(array $numbers, string $pattern, array &$data, string $word) : void
-    {
+    protected function putHyphenPositionForEndDotPattern(
+        array $numbers,
+        string $pattern,
+        array &$data,
+        string $word
+    ) : void {
         foreach ($numbers as $number) {
             $numPos = strlen($pattern) - strpos($pattern, $number) - 2;
 //            echo $pattern . "\n";

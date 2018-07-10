@@ -2,7 +2,6 @@
 
 namespace TextHyphenation\Hyphenators;
 
-
 use RecursiveArrayIterator;
 use RecursiveIteratorIterator;
 use TextHyphenation\Logger\LoggerInterface;
