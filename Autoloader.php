@@ -70,5 +70,9 @@ class Autoloader
             'TextHyphenation\Cache',
             __DIR__ . '/Cache/'
         );
+        $this->addNamespace(
+            'TextHyphenation\Email',
+            __DIR__ . '/Email/'
+        );
     }
 }
