@@ -19,26 +19,17 @@ class Hyphenator implements HyphenatorInterface
     }
 
     /**
-     * @param string $sentence
+     * @param string $word
      * @return string
      */
-    public function hyphenate(string $sentence) : string
+    public function hyphenate(string $word) : string
     {
-        $words = array_filter(preg_split('#(\W+)#', $sentence));
-        $separators = preg_split('#(\w+)#', $sentence);
-        array_shift($separators);
-        $hyphenatedSentence = '';
-        foreach ($words as $word) {
-            $filteredPatterns = $this->filterPatterns($word);
-            $hyphenPositions = [];
-            foreach ($filteredPatterns as $pattern) {
-                $this->putHyphenPosition($hyphenPositions, $word, $pattern);
-            }
-
-            $hyphenated = $this->addHyphens($hyphenPositions, $word);
-            $hyphenatedSentence .= $hyphenated . array_shift($separators);
+        $filteredPatterns = $this->filterPatterns($word);
+        $hyphenPositions = [];
+        foreach ($filteredPatterns as $pattern) {
+            $this->putHyphenPosition($hyphenPositions, $word, $pattern);
         }
-        return $hyphenatedSentence;
+        return $this->addHyphens($hyphenPositions, $word);
     }
 
     /**

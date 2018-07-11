@@ -3,6 +3,8 @@
 namespace TextHyphenation\Console;
 
 use SplFileObject;
+use TextHyphenation\DataProviders\DatabaseProvider;
+use TextHyphenation\DataProviders\PatternsProvider;
 use TextHyphenation\DataProviders\WordsProvider;
 use TextHyphenation\Logger\LoggerInterface;
 
@@ -10,10 +12,12 @@ class Console
 {
     private $tools;
     private $logger;
+    private const POSITIVE_ANSWER = 'yes';
 
     /**
      * Console constructor.
      * @param ToolsInterface $tools
+     * @param LoggerInterface $logger
      */
     public function __construct(ToolsInterface $tools, LoggerInterface $logger)
     {
@@ -23,12 +27,26 @@ class Console
 
     public function execute() : void
     {
-        echo 'Would you like to hyphenate words from file or enter them yourself?[FILE/yourself]';
+        echo "Choose an option (DEFAULT - 3):\n";
+        echo "1) Use file\n";
+        echo "2) Use database\n";
+        echo "3) Enter words yourself\n";
         $option = $this->getConsoleInput();
-        if ($option === 'yourself') {
-            $this->takeInputFromUser();
-        } elseif ($option === 'file' || $option === '') {
-            $this->takeInputFromFile();
+        switch ($option) {
+            case 1:
+                $this->takeInputFromFile();
+                break;
+            case 2:
+                $this->tools->setUseDatabase(true);
+                echo 'Would you like to import patterns from file?[yes/NO]';
+                $answer = strtolower($this->getConsoleInput());
+                if ($answer === $this::POSITIVE_ANSWER) {
+                    $this->tools->importPatterns();
+                }
+                $this->takeInputFromUser();
+                break;
+            default:
+                $this->takeInputFromUser();
         }
     }
 
@@ -76,8 +94,8 @@ class Console
 
         echo "Writing to file...";
 
-        $rezultFile = new SplFileObject('result.txt', 'w');
-        if ($rezultFile->fwrite(implode("\n", $result['result']) === 0)) {
+        $resultFile = new SplFileObject('result.txt', 'w');
+        if ($resultFile->fwrite(implode("\n", $result['result']) === 0)) {
             echo 'Something went wrong...';
             return;
         }
