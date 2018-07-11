@@ -12,8 +12,8 @@ class DatabaseProvider
     public function __construct()
     {
         $this->database = new PDO('mysql:host=localhost', 'root', 'password');
-//        $this->dropTables();
         $this->createDatabase();
+//        $this->dropTables();
         $this->createTables();
     }
 
@@ -32,32 +32,33 @@ class DatabaseProvider
     /**
      * @param string $word
      * @param string $hyphenated
+     * @param array $usedPatterns
      * @return bool
      */
     public function insertWord(string $word, string $hyphenated, array $usedPatterns) : bool
     {
         $this->database->beginTransaction();
-        $stmt = $this->database->prepare('INSERT INTO words(word, hyphenated) VALUES(?, ?)');
-        $stmt->bindParam(1, $word);
-        $stmt->bindParam(2, $hyphenated);
+        $stmt = $this->database->prepare('INSERT INTO words(word, hyphenated) VALUES(:word, :hyphenated)');
+        $stmt->bindParam(':word', $word);
+        $stmt->bindParam(':hyphenated', $hyphenated);
         $stmt->execute();
 
-        $stmt = $this->database->prepare('SELECT id FROM patterns WHERE pattern = ?');
+        $stmt = $this->database->prepare('SELECT id FROM patterns WHERE pattern = :pattern');
         $patternsIds = [];
         foreach ($usedPatterns as $pattern) {
-            $stmt->bindParam(1,$pattern);
+            $stmt->bindParam(':pattern',$pattern);
             $stmt->execute();
             $patternsIds[] = $stmt->fetch(PDO::FETCH_ASSOC)['id'];
         }
 
-        $stmt = $this->database->prepare('SELECT id FROM words WHERE word = ?');
-        $stmt->bindParam(1,$word);
+        $stmt = $this->database->prepare('SELECT id FROM words WHERE word = :word');
+        $stmt->bindParam(':word',$word);
         $stmt->execute();
         $word = $stmt->fetch(PDO::FETCH_ASSOC)['id'];
-        $stmt = $this->database->prepare('INSERT INTO patterns_words(pattern_id, word_id) VALUES(?, ?)');
-        $stmt->bindParam(2, $word);
+        $stmt = $this->database->prepare('INSERT INTO patterns_words(pattern_id, word_id) VALUES(:pattern, :word)');
+        $stmt->bindParam(':word', $word);
         foreach ($patternsIds as $id) {
-            $stmt->bindParam(1, $id);
+            $stmt->bindParam(':pattern', $id);
             $stmt->execute();
         }
         return $this->database->commit();
@@ -95,8 +96,8 @@ class DatabaseProvider
         $this->database->exec('CREATE TABLE IF NOT EXISTS patterns_words(' .
             'pattern_id INT(11) NOT NULL, ' .
             'word_id INT(11) NOT NULL, ' .
-            'FOREIGN KEY (pattern_id) REFERENCES patterns(id), ' .
-            'FOREIGN KEY (word_id) REFERENCES words(id))');
+            'CONSTRAINT pattern_constraint FOREIGN KEY (pattern_id) REFERENCES patterns(id) ON DELETE CASCADE, ' .
+            'CONSTRAINT word_constraint FOREIGN KEY (word_id) REFERENCES words(id) ON DELETE CASCADE)');
     }
 
     private function createDatabase() : void
