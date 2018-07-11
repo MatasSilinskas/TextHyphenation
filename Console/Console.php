@@ -74,6 +74,11 @@ class Console
             }
 
             echo $result['result'] . "\n";
+            if (isset($result['patterns']) && !empty($result['patterns'])) {
+                foreach ($result['patterns'] as $word => $patterns) {
+                    echo 'The word "' . $word . '" used these patterns: ' . implode(', ', $patterns) . "\n";
+                }
+            }
             if (isset($result['time'])) {
                 echo 'The process took ' . $result['time'] . " seconds\n";
             }

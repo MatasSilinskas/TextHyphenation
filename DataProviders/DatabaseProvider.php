@@ -12,7 +12,7 @@ class DatabaseProvider
     public function __construct()
     {
         $this->database = new PDO('mysql:host=localhost', 'root', 'password');
-        $this->dropTables();
+//        $this->dropTables();
         $this->createDatabase();
         $this->createTables();
     }
@@ -34,24 +34,50 @@ class DatabaseProvider
      * @param string $hyphenated
      * @return bool
      */
-    public function insertWord(string $word, string $hyphenated) : bool
+    public function insertWord(string $word, string $hyphenated, array $usedPatterns) : bool
     {
+        $this->database->beginTransaction();
         $stmt = $this->database->prepare('INSERT INTO words(word, hyphenated) VALUES(?, ?)');
         $stmt->bindParam(1, $word);
         $stmt->bindParam(2, $hyphenated);
-        return $stmt->execute();
+        $stmt->execute();
+
+        $stmt = $this->database->prepare('SELECT id FROM patterns WHERE pattern = ?');
+        $patternsIds = [];
+        foreach ($usedPatterns as $pattern) {
+            $stmt->bindParam(1,$pattern);
+            $stmt->execute();
+            $patternsIds[] = $stmt->fetch(PDO::FETCH_ASSOC)['id'];
+        }
+
+        $stmt = $this->database->prepare('SELECT id FROM words WHERE word = ?');
+        $stmt->bindParam(1,$word);
+        $stmt->execute();
+        $word = $stmt->fetch(PDO::FETCH_ASSOC)['id'];
+        $stmt = $this->database->prepare('INSERT INTO patterns_words(pattern_id, word_id) VALUES(?, ?)');
+        $stmt->bindParam(2, $word);
+        foreach ($patternsIds as $id) {
+            $stmt->bindParam(1, $id);
+            $stmt->execute();
+        }
+        return $this->database->commit();
     }
 
     /**
      * @param string $word
-     * @return mixed|null
+     * @return array|null
      */
-    public function searchWord(string $word)
+    public function searchWord(string $word) : ?array
     {
-        $stmt = $this->database->prepare('SELECT * FROM words WHERE word = ?');
-        $stmt->bindParam(1, $word);
+        $stmt = $this->database->prepare('SELECT * FROM words WHERE word = :word');
+        $stmt->bindParam(':word', $word);
         $stmt->execute();
         if ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $stmt = $this->database->prepare('SELECT pattern ' .
+                'FROM patterns, patterns_words ' .
+                "WHERE pattern_id = id AND word_id = " . $result['id']);
+            $stmt->execute();
+            $result['patterns'] = $stmt->fetchAll(PDO::FETCH_COLUMN);
             return $result;
         }
         return null;

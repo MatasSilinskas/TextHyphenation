@@ -20,16 +20,17 @@ class Hyphenator implements HyphenatorInterface
 
     /**
      * @param string $word
+     * @param array $usedPatterns
      * @return string
      */
-    public function hyphenate(string $word) : string
+    public function hyphenate(string $word, array &$usedPatterns = []) : string
     {
         $filteredPatterns = $this->filterPatterns($word);
         $hyphenPositions = [];
         foreach ($filteredPatterns as $pattern) {
             $this->putHyphenPosition($hyphenPositions, $word, $pattern);
         }
-        return $this->addHyphens($hyphenPositions, $word);
+        return $this->addHyphens($hyphenPositions, $word, $usedPatterns);
     }
 
     /**
@@ -116,7 +117,7 @@ class Hyphenator implements HyphenatorInterface
             $numPos = strpos($pattern, $number);
 //            echo $pattern . "\n";
             if (!isset($data[$numPos - 1]) || $data[$numPos - 1] < $number) {
-                $data[$numPos - 1] = $number;
+                $data[$numPos - 1] = [$number, $pattern];
             }
         }
     }
@@ -137,7 +138,7 @@ class Hyphenator implements HyphenatorInterface
             $numPos = strlen($pattern) - strpos($pattern, $number) - 2;
 //            echo $pattern . "\n";
             if (!isset($data[strlen($word) - $numPos]) || $data[strlen($word) - $numPos] < $number) {
-                $data[strlen($word) - $numPos] = $number;
+                $data[strlen($word) - $numPos] = [$number, $pattern];
             }
         }
     }
@@ -162,7 +163,7 @@ class Hyphenator implements HyphenatorInterface
 //                echo $pattern . "\n";
                 $numPos = strpos($pattern, $number);
                 if (!isset($data[$lastPos + $numPos]) || $data[$lastPos + $numPos] < $number) {
-                    $data[$lastPos + $numPos] = $number;
+                    $data[$lastPos + $numPos] = [$number, $pattern];
                 }
             }
             $lastPos = $lastPos + strlen($needle);
@@ -174,14 +175,17 @@ class Hyphenator implements HyphenatorInterface
      * @param string $word
      * @return string
      */
-    private function addHyphens(array $hyphenPositions, string $word) : string
+    private function addHyphens(array $hyphenPositions, string $word, array &$usedPatterns) : string
     {
         krsort($hyphenPositions);
         unset($hyphenPositions[0]);
         unset($hyphenPositions[strlen($word)]);
+
+        $usedPatterns = [];
         foreach ($hyphenPositions as $key => $value) {
-            if ($value % 2 !== 0) {
+            if ($value[0] % 2 !== 0) {
                 $word = substr_replace($word, '-', $key, 0);
+                $usedPatterns[] = $value[1];
             }
         }
 

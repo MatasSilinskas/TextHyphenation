@@ -22,16 +22,17 @@ class CachingHyphenator extends Hyphenator implements HyphenatorInterface
 
     /**
      * @param string $word
+     * @param array $usedPatterns
      * @return string
      * @throws InvalidArgumentException
      */
-    public function hyphenate(string $word): string
+    public function hyphenate(string $word, array &$usedPatterns = []): string
     {
         if ($this->cache->has($word)) {
             return $this->cache->get($word);
         }
 
-        $hyphenated = parent::hyphenate($word);
+        $hyphenated = parent::hyphenate($word, $usedPatterns);
         $this->cache->set($word, $hyphenated);
         return $hyphenated;
     }

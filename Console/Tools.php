@@ -41,7 +41,8 @@ class Tools implements ToolsInterface
 
         return [
             'time' => $this->timer->getDifference(),
-            'result' => $result
+            'result' => $result['hyphenated'],
+            'patterns' => $result['patterns'],
         ];
     }
 
@@ -54,15 +55,17 @@ class Tools implements ToolsInterface
     {
         $this->timer->reset();
         $this->timer->start();
-        $result = [];
+        $patterns = [];
         foreach ($sentences as $sentence) {
-            $result[] = $this->hyphenateSentence($sentence);
+            $hyphenateData = $this->hyphenateSentence($sentence);
+            $patterns[$hyphenateData['hyphenated']] = $hyphenateData['patterns'];
         }
         $this->timer->stop();
 
         return [
             'time' => $this->timer->getDifference(),
-            'result' => $result
+            'result' => array_keys($patterns),
+            'patterns' => $patterns,
         ];
     }
 
@@ -90,27 +93,32 @@ class Tools implements ToolsInterface
 
     /**
      * @param string $sentence
-     * @return string
+     * @return array
      */
-    private function hyphenateSentence(string $sentence) : string
+    private function hyphenateSentence(string $sentence) : array
     {
-        $result = '';
+        $result = [];
+        $result['hyphenated'] = '';
+        $result['patterns'] = [];
         $separators = [];
         $words = $this->splitSentence($sentence, $separators);
         foreach ($words as $word) {
             if ($this->useDatabase) {
                 if (($dbWord = $this->database->searchWord($word)) !== null) {
-                    $result .= $dbWord['hyphenated'] . array_shift($separators);
+                    $result['hyphenated'] .= $dbWord['hyphenated'] . array_shift($separators);
+                    $result['patterns'][$word] = $dbWord['patterns'];
                     continue;
                 }
 
-                $hyphenated = $this->hyphenator->hyphenate($word);
-                $result .= $hyphenated . array_shift($separators);
-                $this->database->insertWord($word, $hyphenated);
+                $patterns = [];
+                $hyphenated = $this->hyphenator->hyphenate($word, $patterns);
+                $result['hyphenated'] .= $hyphenated . array_shift($separators);
+                $result['patterns'][$word] = $patterns;
+                $this->database->insertWord($word, $hyphenated, $patterns);
                 continue;
             }
 
-            $result .= $this->hyphenator->hyphenate($word) . array_shift($separators);
+            $result['hyphenated'] .= $this->hyphenator->hyphenate($word) . array_shift($separators);
 
         }
 
