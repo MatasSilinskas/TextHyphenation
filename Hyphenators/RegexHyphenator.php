@@ -2,10 +2,6 @@
 
 namespace TextHyphenation\Hyphenators;
 
-use RecursiveArrayIterator;
-use RecursiveIteratorIterator;
-use TextHyphenation\Logger\LoggerInterface;
-
 class RegexHyphenator extends Hyphenator
 {
     private const SEARCH_FOR = [
@@ -17,11 +13,10 @@ class RegexHyphenator extends Hyphenator
     /**
      * RegexHyphenator constructor.
      * @param array $patterns
-     * @param LoggerInterface $logger
      */
-    public function __construct(array $patterns, LoggerInterface $logger)
+    public function __construct(array $patterns)
     {
-        parent::__construct($patterns, $logger);
+        parent::__construct($patterns);
     }
 
     /**

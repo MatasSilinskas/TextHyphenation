@@ -4,20 +4,19 @@ namespace TextHyphenation\Hyphenators;
 
 use TextHyphenation\Cache\CacheInterface;
 use TextHyphenation\Cache\InvalidArgumentException;
-use TextHyphenation\Logger\LoggerInterface;
 
 class CachingHyphenator extends Hyphenator implements HyphenatorInterface
 {
     private $cache;
+
     /**
      * CachingHyphenator constructor.
      * @param array $patterns
-     * @param LoggerInterface $logger
      * @param CacheInterface $cache
      */
-    public function __construct(array $patterns, LoggerInterface $logger, CacheInterface $cache)
+    public function __construct(array $patterns, CacheInterface $cache)
     {
-        parent::__construct($patterns, $logger);
+        parent::__construct($patterns);
         $this->cache = $cache;
     }
 

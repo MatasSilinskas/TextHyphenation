@@ -5,6 +5,7 @@ require_once 'Autoloader.php';
 use Loader\Autoloader;
 use TextHyphenation\Cache\ArrayCachePool;
 use TextHyphenation\Console\Console;
+use TextHyphenation\Console\Tools;
 use TextHyphenation\DataProviders\PatternsProvider;
 use TextHyphenation\Hyphenators\CachingHyphenator;
 use TextHyphenation\Hyphenators\Hyphenator;
@@ -21,8 +22,9 @@ $logger = new FileLogger($config['hyphenator']);
 $cache = new ArrayCachePool;
 $patternsProvider = new PatternsProvider;
 
-$hyphenator = new RegexHyphenator($patternsProvider->getData(), $logger);
+$hyphenator = new Hyphenator($patternsProvider->getData());
 $timer = new Timer;
 
-$console = new Console($hyphenator, $timer);
+$tools = new Tools($hyphenator, $timer);
+$console = new Console($tools, $logger);
 $console->execute();

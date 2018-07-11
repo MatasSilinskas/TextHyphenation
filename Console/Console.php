@@ -4,23 +4,21 @@ namespace TextHyphenation\Console;
 
 use SplFileObject;
 use TextHyphenation\DataProviders\WordsProvider;
-use TextHyphenation\Hyphenators\HyphenatorInterface;
-use TextHyphenation\Timer\Timer;
+use TextHyphenation\Logger\LoggerInterface;
 
 class Console
 {
-    private $hyphenator;
-    private $timer;
+    private $tools;
+    private $logger;
 
     /**
      * Console constructor.
-     * @param HyphenatorInterface $hyphenator
-     * @param Timer $timer
+     * @param ToolsInterface $tools
      */
-    public function __construct(HyphenatorInterface $hyphenator, Timer $timer)
+    public function __construct(ToolsInterface $tools, LoggerInterface $logger)
     {
-        $this->hyphenator = $hyphenator;
-        $this->timer = $timer;
+        $this->tools = $tools;
+        $this->logger = $logger;
     }
 
     public function execute() : void
@@ -51,13 +49,16 @@ class Console
                 break;
             }
 
-            $this->timer->start();
-            $word = $this->hyphenator->hyphenate($input);
-            $this->timer->stop();
+            $result = $this->tools->modify($input);
 
-            echo $word . "\n";
-            echo 'The process took ' . $this->timer->getDifference() . " seconds\n";
-            $this->timer->reset();
+            if ($input === $result['result']) {
+                $this->logger->warning("Hyphenated form of the word $input is equal to it`s original form.");
+            }
+
+            echo $result['result'] . "\n";
+            if (isset($result['time'])) {
+                echo 'The process took ' . $result['time'] . " seconds\n";
+            }
         }
     }
 
@@ -67,18 +68,17 @@ class Console
         $wordsProvider = new WordsProvider();
         $words = $wordsProvider->getData();
 
-        $result = [];
-        $this->timer->start();
-        foreach ($words as $word) {
-            $result[] = $this->hyphenator->hyphenate($word);
-        }
-        $this->timer->stop();
+        $result = $this->tools->modifyMany($words);
 
-        echo 'The process took ' . $this->timer->getDifference() . " seconds\nWritting to file...";
+        if (isset($result['time'])) {
+            echo 'The process took ' . $result['time'] . " seconds\n";
+        }
+
+        echo "Writing to file...";
 
         $rezultFile = new SplFileObject('result.txt', 'w');
-        if ($rezultFile->fwrite(implode("\n", $result) === 0)) {
-            echo 'Somethign went wrong...';
+        if ($rezultFile->fwrite(implode("\n", $result['result']) === 0)) {
+            echo 'Something went wrong...';
             return;
         }
         echo ' Done!';
