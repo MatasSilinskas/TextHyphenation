@@ -16,10 +16,13 @@ abstract class Database
 
     /**
      * Database constructor.
+     * @param string $dsn
+     * @param string $username
+     * @param string $password
      */
-    public function __construct()
+    public function __construct(string $dsn, string $username, string $password)
     {
-        $this->database = new PDO('mysql:host=localhost', 'root', 'password');
+        $this->database = new PDO($dsn, $username, $password);
     }
 
     /**

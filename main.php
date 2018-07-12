@@ -19,18 +19,18 @@ $config = include 'config.php';
 $loader = new Autoloader;
 $loader->addNameSpaces($config['namespaces']);
 
-
-//$database = new DatabaseProvider();
-//$database->importPatterns(['vienas', 'du']);
-
-
-$logger = new FileLogger($config['hyphenator']);
+$logger = new FileLogger($config['hyphenatorLogFile']);
 $cache = new ArrayCachePool;
 $patternsProvider = new PatternsProvider;
 
 $hyphenator = new Hyphenator($patternsProvider->getData());
 $timer = new Timer;
-$database = new DatabaseProvider();
+
+$database = new DatabaseProvider(
+    $config['databaseConfig']['dsn'],
+    $config['databaseConfig']['username'],
+    $config['databaseConfig']['password']
+);
 
 $tools = new Tools($hyphenator, $timer, $database);
 $console = new Console($tools, $logger);

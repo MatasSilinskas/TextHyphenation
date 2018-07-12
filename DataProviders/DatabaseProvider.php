@@ -10,9 +10,9 @@ use TextHyphenation\Database\QueryBuilder;
 class DatabaseProvider extends Database
 {
     private $queryBuilder;
-    public function __construct()
+    public function __construct(string $dsn, string $username, string $password)
     {
-        parent::__construct();
+        parent::__construct($dsn, $username, $password);
         $this->createDatabase('hyphenation');
 //        $this->dropTables();
         $this->createTables();
