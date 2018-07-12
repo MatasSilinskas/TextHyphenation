@@ -93,7 +93,7 @@ class Hyphenator implements HyphenatorInterface
         $needle = $this->normalizePattern($pattern);
         preg_match('#\d+#', $pattern, $numbers);
 
-        if ($dotPos = strpos($pattern, '.') !== false) {
+        if (($dotPos = strpos($pattern, '.')) !== false) {
             if ($dotPos === 0 && substr($word, 0, strlen($needle)) === $needle) {
                 $this->putHyphenPositionForStartDotPattern($numbers, $pattern, $data);
             } elseif (substr($word, strlen($word) - strlen($needle)) === $needle) {
@@ -115,8 +115,7 @@ class Hyphenator implements HyphenatorInterface
     {
         foreach ($numbers as $number) {
             $numPos = strpos($pattern, $number);
-//            echo $pattern . "\n";
-            if (!isset($data[$numPos - 1]) || $data[$numPos - 1] < $number) {
+            if (!isset($data[$numPos - 1]) || $data[$numPos - 1][0] < $number) {
                 $data[$numPos - 1] = [$number, $pattern];
             }
         }
@@ -137,7 +136,7 @@ class Hyphenator implements HyphenatorInterface
         foreach ($numbers as $number) {
             $numPos = strlen($pattern) - strpos($pattern, $number) - 2;
 //            echo $pattern . "\n";
-            if (!isset($data[strlen($word) - $numPos]) || $data[strlen($word) - $numPos] < $number) {
+            if (!isset($data[strlen($word) - $numPos]) || $data[strlen($word) - $numPos][0] < $number) {
                 $data[strlen($word) - $numPos] = [$number, $pattern];
             }
         }
@@ -161,8 +160,7 @@ class Hyphenator implements HyphenatorInterface
         while (($lastPos = strpos($word, $needle, $lastPos)) !== false) {
             foreach ($numbers as $number) {
                 $numPos = strpos($pattern, $number);
-//                echo "$pattern $numPos \n" ;
-                if (!isset($data[$lastPos + $numPos]) || $data[$lastPos + $numPos] < $number) {
+                if (!isset($data[$lastPos + $numPos]) || $data[$lastPos + $numPos][0] < $number) {
                     $data[$lastPos + $numPos] = [$number, $pattern];
                 }
             }
