@@ -20,7 +20,6 @@ $loader = new Autoloader;
 $loader->addNameSpaces($config['namespaces']);
 
 
-
 //$database = new DatabaseProvider();
 //$database->importPatterns(['vienas', 'du']);
 

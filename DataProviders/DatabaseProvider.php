@@ -4,29 +4,42 @@ namespace TextHyphenation\DataProviders;
 
 
 use PDO;
+use TextHyphenation\Database\Database;
+use TextHyphenation\Database\QueryBuilder;
 
-class DatabaseProvider
+class DatabaseProvider extends Database
 {
-    private $database;
-
     public function __construct()
     {
-        $this->database = new PDO('mysql:host=localhost', 'root', 'password');
-        $this->createDatabase();
+        parent::__construct();
+        $this->createDatabase('hyphenation');
 //        $this->dropTables();
         $this->createTables();
     }
 
-    public function importPatterns(array $patterns)
+    /**
+     * @param array $patterns
+     * @return bool
+     */
+    public function importPatterns(array $patterns): bool
     {
-        $this->database->beginTransaction();
-        $this->database->exec('DELETE FROM patterns');
-        $stmt = $this->database->prepare('INSERT INTO patterns(pattern) VALUES(?)');
+        $this->beginTransaction();
+        $queryBuilder = new QueryBuilder();
+        $queryBuilder->delete()->from(['patterns']);
+        $this
+            ->prepare($queryBuilder->getQuery())
+            ->execute($queryBuilder->getParams());
+
+        $queryBuilder
+            ->reset()
+            ->insert('patterns', ['pattern'], [':pattern' => '']);
+        $this->prepare($queryBuilder->getQuery());
+
         foreach ($patterns as $pattern) {
-            $stmt->bindParam(1, $pattern);
-            $stmt->execute();
+            $queryBuilder->addParamValue(':pattern', $pattern);
+            $this->execute($queryBuilder->getParams());
         }
-        $this->database->commit();
+        return $this->commit();
     }
 
     /**
@@ -37,31 +50,51 @@ class DatabaseProvider
      */
     public function insertWord(string $word, string $hyphenated, array $usedPatterns) : bool
     {
-        $this->database->beginTransaction();
-        $stmt = $this->database->prepare('INSERT INTO words(word, hyphenated) VALUES(:word, :hyphenated)');
-        $stmt->bindParam(':word', $word);
-        $stmt->bindParam(':hyphenated', $hyphenated);
-        $stmt->execute();
+        $queryBuilder = new QueryBuilder();
+        $queryBuilder
+            ->reset()
+            ->select(['id'])->from(['patterns'])
+            ->where('pattern', [':pattern' => '']);
 
-        $stmt = $this->database->prepare('SELECT id FROM patterns WHERE pattern = :pattern');
+        $this->prepare($queryBuilder->getQuery());
         $patternsIds = [];
         foreach ($usedPatterns as $pattern) {
-            $stmt->bindParam(':pattern',$pattern);
-            $stmt->execute();
-            $patternsIds[] = $stmt->fetch(PDO::FETCH_ASSOC)['id'];
+            $queryBuilder->addParamValue(':pattern', $pattern);
+            $patternsIds[] = array_column($this->execute($queryBuilder->getParams()), 'id')[0];
         }
 
-        $stmt = $this->database->prepare('SELECT id FROM words WHERE word = :word');
-        $stmt->bindParam(':word',$word);
-        $stmt->execute();
-        $word = $stmt->fetch(PDO::FETCH_ASSOC)['id'];
-        $stmt = $this->database->prepare('INSERT INTO patterns_words(pattern_id, word_id) VALUES(:pattern, :word)');
-        $stmt->bindParam(':word', $word);
+        $this->beginTransaction();
+
+        $queryBuilder->reset()->insert('words', ['word', 'hyphenated'], [
+            ':word' => $word,
+            ':hyphenated' => $hyphenated
+        ]);
+
+        $this
+            ->prepare($queryBuilder->getQuery())
+            ->execute($queryBuilder->getParams());
+
+        $queryBuilder
+            ->reset()
+            ->select(['*'])->from(['words'])
+            ->where('word', [':word' => $word]);
+
+        $word = $this
+            ->prepare($queryBuilder->getQuery())
+            ->execute($queryBuilder->getParams())[0]['id'];
+        $queryBuilder
+            ->reset()
+            ->insert('patterns_words', ['pattern_id', 'word_id'], [
+                ':pattern' => '',
+                ':word' => $word
+            ]);
+        $this->prepare($queryBuilder->getQuery());
         foreach ($patternsIds as $id) {
-            $stmt->bindParam(':pattern', $id);
-            $stmt->execute();
+            $queryBuilder->addParamValue(':pattern', $id);
+            $this->execute($queryBuilder->getParams());
         }
-        return $this->database->commit();
+
+        return $this->commit();
     }
 
     /**
@@ -70,46 +103,57 @@ class DatabaseProvider
      */
     public function searchWord(string $word) : ?array
     {
-        $stmt = $this->database->prepare('SELECT * FROM words WHERE word = :word');
-        $stmt->bindParam(':word', $word);
-        $stmt->execute();
-        if ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $stmt = $this->database->prepare('SELECT pattern ' .
-                'FROM patterns, patterns_words ' .
-                "WHERE pattern_id = id AND word_id = " . $result['id']);
-            $stmt->execute();
-            $result['patterns'] = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        $queryBuilder = new QueryBuilder();
+        $queryBuilder
+            ->select(['*'])->from(['words'])
+            ->where('word', [':word' => $word]);
+        $result = $this
+            ->prepare($queryBuilder->getQuery())
+            ->execute($queryBuilder->getParams());
+
+        if (!empty($result)) {
+            $result = $result[0];
+            $queryBuilder
+                ->reset()
+                ->select(['pattern'])->from(['patterns', 'patterns_words'])
+                ->where('pattern_id', 'id')
+                ->andWhere('word_id', $result['id']);
+            $result['patterns'] = array_column(
+                $this
+                    ->prepare($queryBuilder->getQuery())
+                    ->execute($queryBuilder->getParams()),
+                'pattern'
+            );
+
             return $result;
         }
+
         return null;
     }
 
     private function createTables() : void
     {
-        $this->database->exec('CREATE TABLE IF NOT EXISTS patterns(' .
-            'id INT(11) AUTO_INCREMENT PRIMARY KEY, ' .
-            'pattern VARCHAR(10) UNIQUE NOT NULL)');
-        $this->database->exec('CREATE TABLE IF NOT EXISTS words(' .
-            'id INT(11) AUTO_INCREMENT PRIMARY KEY, ' .
-            'word VARCHAR(100) UNIQUE NOT NULL, ' .
-            'hyphenated VARCHAR(100) UNIQUE NOT NULL)');
-        $this->database->exec('CREATE TABLE IF NOT EXISTS patterns_words(' .
-            'pattern_id INT(11) NOT NULL, ' .
-            'word_id INT(11) NOT NULL, ' .
-            'CONSTRAINT pattern_constraint FOREIGN KEY (pattern_id) REFERENCES patterns(id) ON DELETE CASCADE, ' .
-            'CONSTRAINT word_constraint FOREIGN KEY (word_id) REFERENCES words(id) ON DELETE CASCADE)');
-    }
-
-    private function createDatabase() : void
-    {
-        $this->database->exec('CREATE DATABASE IF NOT EXISTS hyphenation');
-        $this->database->exec('USE hyphenation');
+        $this->createTable('patterns', [
+            'id INT(11) AUTO_INCREMENT PRIMARY KEY',
+            'pattern VARCHAR(10) UNIQUE NOT NULL'
+        ]);
+        $this->createTable('words', [
+            'id INT(11) AUTO_INCREMENT PRIMARY KEY',
+            'word VARCHAR(100) UNIQUE NOT NULL',
+            'hyphenated VARCHAR(100) UNIQUE NOT NULL',
+        ]);
+        $this->createTable('patterns_words', [
+            'pattern_id INT(11) NOT NULL',
+            'word_id INT(11) NOT NULL',
+            'CONSTRAINT pattern_constraint FOREIGN KEY (pattern_id) REFERENCES patterns(id) ON DELETE CASCADE',
+            'CONSTRAINT word_constraint FOREIGN KEY (word_id) REFERENCES words(id) ON DELETE CASCADE'
+        ]);
     }
 
     private function dropTables() : void
     {
-        $this->database->exec('DROP TABLE patterns_words');
-        $this->database->exec('DROP TABLE patterns');
-        $this->database->exec('DROP TABLE words');
+        $this->dropTable('patterns_words');
+        $this->dropTable('patterns');
+        $this->dropTable('words');
     }
 }

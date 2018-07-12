@@ -10,5 +10,6 @@ return [
         'TextHyphenation\Cache' => '/Cache/',
         'TextHyphenation\Email' => '/Email/',
         'TextHyphenation\Logger' => '/Logger/',
+        'TextHyphenation\Database' => '/Database/',
     ],
 ];
