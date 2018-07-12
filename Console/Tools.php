@@ -119,7 +119,6 @@ class Tools implements ToolsInterface
             }
 
             $result['hyphenated'] .= $this->hyphenator->hyphenate($word) . array_shift($separators);
-
         }
 
         return $result;

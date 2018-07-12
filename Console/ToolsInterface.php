@@ -2,7 +2,6 @@
 
 namespace TextHyphenation\Console;
 
-
 interface ToolsInterface
 {
     public function modify(string $sentence): array;

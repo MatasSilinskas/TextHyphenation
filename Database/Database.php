@@ -2,7 +2,6 @@
 
 namespace TextHyphenation\Database;
 
-
 use PDO;
 
 abstract class Database

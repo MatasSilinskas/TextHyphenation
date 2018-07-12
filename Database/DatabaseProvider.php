@@ -2,7 +2,6 @@
 
 namespace TextHyphenation\Database;
 
-
 class DatabaseProvider extends Database
 {
     private $queryBuilder;
