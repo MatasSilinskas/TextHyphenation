@@ -93,7 +93,7 @@ class Hyphenator implements HyphenatorInterface
         $needle = $this->normalizePattern($pattern);
         preg_match('#\d+#', $pattern, $numbers);
 
-        if ($dotPos = strpos($pattern, '.')) {
+        if ($dotPos = strpos($pattern, '.') !== false) {
             if ($dotPos === 0 && substr($word, 0, strlen($needle)) === $needle) {
                 $this->putHyphenPositionForStartDotPattern($numbers, $pattern, $data);
             } elseif (substr($word, strlen($word) - strlen($needle)) === $needle) {
@@ -160,13 +160,13 @@ class Hyphenator implements HyphenatorInterface
         $lastPos = 0;
         while (($lastPos = strpos($word, $needle, $lastPos)) !== false) {
             foreach ($numbers as $number) {
-//                echo $pattern . "\n";
                 $numPos = strpos($pattern, $number);
+//                echo "$pattern $numPos \n" ;
                 if (!isset($data[$lastPos + $numPos]) || $data[$lastPos + $numPos] < $number) {
                     $data[$lastPos + $numPos] = [$number, $pattern];
                 }
             }
-            $lastPos = $lastPos + strlen($needle);
+            $lastPos += strlen($needle);
         }
     }
 
