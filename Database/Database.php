@@ -8,6 +8,7 @@ use PDO;
 abstract class Database
 {
     private $database;
+    private $transactionFailed = false;
     /**
      * @var \PDOStatement $statement
      */
@@ -67,8 +68,12 @@ abstract class Database
             $this->statement->bindValue($key, $value);
         }
         $this->statement->execute();
-//        var_dump($this->statement->errorInfo());
-        return $this->statement->fetchAll(PDO::FETCH_ASSOC);
+        if (($result = $this->statement->fetchAll(PDO::FETCH_ASSOC)) === false) {
+            if ($this->database->inTransaction()) {
+                $this->transactionFailed = true;
+            }
+        }
+        return $result;
     }
 
     /**
@@ -77,6 +82,7 @@ abstract class Database
     public function beginTransaction(): self
     {
         $this->database->beginTransaction();
+
         return $this;
     }
 
@@ -85,6 +91,11 @@ abstract class Database
      */
     public function commit(): bool
     {
+        if ($this->transactionFailed) {
+            $this->database->rollBack();
+            $this->transactionFailed = false;
+            return false;
+        }
         return $this->database->commit();
     }
 }
