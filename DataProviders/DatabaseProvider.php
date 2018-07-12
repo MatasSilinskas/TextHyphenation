@@ -9,12 +9,14 @@ use TextHyphenation\Database\QueryBuilder;
 
 class DatabaseProvider extends Database
 {
+    private $queryBuilder;
     public function __construct()
     {
         parent::__construct();
         $this->createDatabase('hyphenation');
 //        $this->dropTables();
         $this->createTables();
+        $this->queryBuilder = new QueryBuilder();
     }
 
     /**
@@ -24,21 +26,8 @@ class DatabaseProvider extends Database
     public function importPatterns(array $patterns): bool
     {
         $this->beginTransaction();
-        $queryBuilder = new QueryBuilder();
-        $queryBuilder->delete()->from(['patterns']);
-        $this
-            ->prepare($queryBuilder->getQuery())
-            ->execute($queryBuilder->getParams());
-
-        $queryBuilder
-            ->reset()
-            ->insert('patterns', ['pattern'], [':pattern' => '']);
-        $this->prepare($queryBuilder->getQuery());
-
-        foreach ($patterns as $pattern) {
-            $queryBuilder->addParamValue(':pattern', $pattern);
-            $this->execute($queryBuilder->getParams());
-        }
+        $this->deleteOldPatterns();
+        $this->insertNewPatterns($patterns);
         return $this->commit();
     }
 
@@ -50,50 +39,11 @@ class DatabaseProvider extends Database
      */
     public function insertWord(string $word, string $hyphenated, array $usedPatterns) : bool
     {
-        $queryBuilder = new QueryBuilder();
-        $queryBuilder
-            ->reset()
-            ->select(['id'])->from(['patterns'])
-            ->where('pattern', [':pattern' => '']);
-
-        $this->prepare($queryBuilder->getQuery());
-        $patternsIds = [];
-        foreach ($usedPatterns as $pattern) {
-            $queryBuilder->addParamValue(':pattern', $pattern);
-            $patternsIds[] = array_column($this->execute($queryBuilder->getParams()), 'id')[0];
-        }
-
+        $patternsIds = $this->getPatternsIds($usedPatterns);
         $this->beginTransaction();
-
-        $queryBuilder->reset()->insert('words', ['word', 'hyphenated'], [
-            ':word' => $word,
-            ':hyphenated' => $hyphenated
-        ]);
-
-        $this
-            ->prepare($queryBuilder->getQuery())
-            ->execute($queryBuilder->getParams());
-
-        $queryBuilder
-            ->reset()
-            ->select(['*'])->from(['words'])
-            ->where('word', [':word' => $word]);
-
-        $word = $this
-            ->prepare($queryBuilder->getQuery())
-            ->execute($queryBuilder->getParams())[0]['id'];
-        $queryBuilder
-            ->reset()
-            ->insert('patterns_words', ['pattern_id', 'word_id'], [
-                ':pattern' => '',
-                ':word' => $word
-            ]);
-        $this->prepare($queryBuilder->getQuery());
-        foreach ($patternsIds as $id) {
-            $queryBuilder->addParamValue(':pattern', $id);
-            $this->execute($queryBuilder->getParams());
-        }
-
+        $this->insertNewWord($word, $hyphenated);
+        $word = $this->findWord($word)[0]['id'];
+        $this->insertWordAndPatternsRelations($word, $patternsIds);
         return $this->commit();
     }
 
@@ -103,28 +53,10 @@ class DatabaseProvider extends Database
      */
     public function searchWord(string $word) : ?array
     {
-        $queryBuilder = new QueryBuilder();
-        $queryBuilder
-            ->select(['*'])->from(['words'])
-            ->where('word', [':word' => $word]);
-        $result = $this
-            ->prepare($queryBuilder->getQuery())
-            ->execute($queryBuilder->getParams());
-
+        $result = $this->findWord($word);
         if (!empty($result)) {
             $result = $result[0];
-            $queryBuilder
-                ->reset()
-                ->select(['pattern'])->from(['patterns', 'patterns_words'])
-                ->where('pattern_id', 'id')
-                ->andWhere('word_id', $result['id']);
-            $result['patterns'] = array_column(
-                $this
-                    ->prepare($queryBuilder->getQuery())
-                    ->execute($queryBuilder->getParams()),
-                'pattern'
-            );
-
+            $result['patterns'] = $this->findPatterns($result['id']);
             return $result;
         }
 
@@ -155,5 +87,121 @@ class DatabaseProvider extends Database
         $this->dropTable('patterns_words');
         $this->dropTable('patterns');
         $this->dropTable('words');
+    }
+
+    /**
+     * @return array
+     */
+    private function prepareAndExecute(): array
+    {
+        $result = $this
+            ->prepare($this->queryBuilder->getQuery())
+            ->execute($this->queryBuilder->getParams());
+
+        $this->queryBuilder->reset();
+        return $result;
+    }
+
+    private function deleteOldPatterns(): void
+    {
+        $this->queryBuilder->reset()->delete()->from(['patterns']);
+        $this->prepareAndExecute();
+    }
+
+    /**
+     * @param array $patterns
+     */
+    private function insertNewPatterns(array $patterns): void
+    {
+        $this->queryBuilder
+            ->reset()
+            ->insert('patterns', ['pattern'], [':pattern' => '']);
+        $this->prepare($this->queryBuilder->getQuery());
+
+        foreach ($patterns as $pattern) {
+            $this->queryBuilder->addParamValue(':pattern', $pattern);
+            $this->execute($this->queryBuilder->getParams());
+        }
+    }
+
+    /**
+     * @param array $patterns
+     * @return array
+     */
+    private function getPatternsIds(array $patterns): array
+    {
+        $this->queryBuilder
+            ->reset()
+            ->select(['id'])->from(['patterns'])
+            ->where('pattern', [':pattern' => '']);
+
+        $this->prepare($this->queryBuilder->getQuery());
+        $patternsIds = [];
+        foreach ($patterns as $pattern) {
+            $this->queryBuilder->addParamValue(':pattern', $pattern);
+            $patternsIds[] = array_column($this->execute($this->queryBuilder->getParams()), 'id')[0];
+        }
+
+        return $patternsIds;
+    }
+
+    /**
+     * @param string $word
+     * @param string $hyphenated
+     */
+    private function insertNewWord(string $word, string $hyphenated)
+    {
+        $this->queryBuilder->reset()->insert('words', ['word', 'hyphenated'], [
+            ':word' => $word,
+            ':hyphenated' => $hyphenated
+        ]);
+
+        $this->prepareAndExecute();
+    }
+
+    /**
+     * @param string $word
+     * @return array
+     */
+    private function findWord(string $word): array
+    {
+        $this->queryBuilder
+            ->reset()
+            ->select(['*'])->from(['words'])
+            ->where('word', [':word' => $word]);
+        return $this->prepareAndExecute();
+    }
+
+    /**
+     * @param string $word
+     * @param array $patternsIds
+     */
+    private function insertWordAndPatternsRelations(string $word, array $patternsIds): void
+    {
+        $this->queryBuilder
+            ->reset()
+            ->insert('patterns_words', ['pattern_id', 'word_id'], [
+                ':pattern' => '',
+                ':word' => $word
+            ]);
+        $this->prepare($this->queryBuilder->getQuery());
+        foreach ($patternsIds as $id) {
+            $this->queryBuilder->addParamValue(':pattern', $id);
+            $this->execute($this->queryBuilder->getParams());
+        }
+    }
+
+    /**
+     * @param int $wordId
+     * @return array
+     */
+    private function findPatterns(int $wordId): array
+    {
+        $this->queryBuilder
+            ->select(['pattern'])->from(['patterns', 'patterns_words'])
+            ->where('pattern_id', 'id')
+            ->andWhere('word_id', $wordId);
+
+        return array_column($this->prepareAndExecute(), 'pattern');
     }
 }
