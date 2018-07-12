@@ -1,15 +1,12 @@
 <?php
 
-namespace TextHyphenation\DataProviders;
+namespace TextHyphenation\Database;
 
-
-use PDO;
-use TextHyphenation\Database\Database;
-use TextHyphenation\Database\QueryBuilder;
 
 class DatabaseProvider extends Database
 {
     private $queryBuilder;
+
     public function __construct(string $dsn, string $username, string $password)
     {
         parent::__construct($dsn, $username, $password);

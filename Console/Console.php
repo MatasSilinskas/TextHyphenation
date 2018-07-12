@@ -3,8 +3,6 @@
 namespace TextHyphenation\Console;
 
 use SplFileObject;
-use TextHyphenation\DataProviders\DatabaseProvider;
-use TextHyphenation\DataProviders\PatternsProvider;
 use TextHyphenation\DataProviders\WordsProvider;
 use TextHyphenation\Logger\LoggerInterface;
 

@@ -6,7 +6,7 @@ use Loader\Autoloader;
 use TextHyphenation\Cache\ArrayCachePool;
 use TextHyphenation\Console\Console;
 use TextHyphenation\Console\Tools;
-use TextHyphenation\DataProviders\DatabaseProvider;
+use TextHyphenation\Database\DatabaseProvider;
 use TextHyphenation\DataProviders\PatternsProvider;
 use TextHyphenation\Hyphenators\CachingHyphenator;
 use TextHyphenation\Hyphenators\Hyphenator;

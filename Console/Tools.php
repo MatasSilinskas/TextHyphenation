@@ -2,7 +2,7 @@
 
 namespace TextHyphenation\Console;
 
-use TextHyphenation\DataProviders\DatabaseProvider;
+use TextHyphenation\Database\DatabaseProvider;
 use TextHyphenation\DataProviders\PatternsProvider;
 use TextHyphenation\Hyphenators\HyphenatorInterface;
 use TextHyphenation\Timer\Timer;
