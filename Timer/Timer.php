@@ -9,17 +9,17 @@ class Timer
     private $start;
     private $stop;
 
-    public function start() : void
+    public function start(): void
     {
         $this->start = microtime(true);
     }
 
-    public function stop() : void
+    public function stop(): void
     {
         $this->stop = microtime(true);
     }
 
-    public function reset() : void
+    public function reset(): void
     {
         $this->stop = null;
         $this->start = null;
@@ -29,7 +29,7 @@ class Timer
      * @return float
      * @throws Exception
      */
-    public function getDifference() : float
+    public function getDifference(): float
     {
         if ($this->start === null) {
             throw new Exception('Timer hasn`t been started!');
