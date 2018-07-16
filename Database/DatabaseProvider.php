@@ -84,14 +84,15 @@ class DatabaseProvider extends Database
 
     /**
      * @param string $pattern
+     * @return int|null
      */
-    public function insertPattern(string $pattern): void
+    public function insertPattern(string $pattern): ?int
     {
         $this->queryBuilder
             ->reset()
             ->insert('patterns', ['pattern'], [':pattern' => $pattern]);
 
-        $this->prepareAndExecute();
+        return $this->checkRows();
     }
 
     /**

@@ -22,22 +22,25 @@ class REST
      * @param $function
      * @return int|null
      */
-    protected function put(array $keys, $function): ?int
+    protected function put(array $keys, callable $function): ?int
     {
-        $userParams = $this->getUserParams($keys);
-        $result = $function($userParams);
-        return $this->validateResult($result);
+        return $this->execute($keys, $function);
     }
 
-    protected function post(array $params, $function)
+    /**
+     * @param array $params
+     * @param callable $function
+     * @return int|null
+     */
+    protected function post(array $params, callable $function): ?int
     {
         $userParams = [];
         foreach ($params as $param) {
             $userParams[$param] = $_POST[$param];
         }
 
-        $function($userParams);
-        //check for mistakes
+        $result = $function($userParams);
+        return $this->validateResult($result, 409);
     }
 
     /**
@@ -47,8 +50,12 @@ class REST
      */
     protected function delete(array $keys, callable $function): ?int
     {
-        $userParams = $this->getUserParams($keys);
-        $result = $function($userParams);
+        return $this->execute($keys, $function);
+    }
+
+    private function execute(array $keys, callable $function): ?int
+    {
+        $result = $function($this->getUserParams($keys));
         return $this->validateResult($result);
     }
 
@@ -66,14 +73,15 @@ class REST
 
     /**
      * @param int|null $result
+     * @param int $codeOnZeroResults
      * @return int|null
      */
-    private function validateResult(?int $result): ?int
+    private function validateResult(?int $result, int $codeOnZeroResults = 404): ?int
     {
         if ($result === null) {
             http_response_code(500);
         } elseif ($result === 0) {
-            http_response_code(404);
+            http_response_code($codeOnZeroResults);
         }
 
         return $result;

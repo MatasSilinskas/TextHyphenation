@@ -30,19 +30,28 @@ class TextHyphenationAPI extends REST
         });
     }
 
-    public function addPattern()
+    /**
+     * @return int|null
+     */
+    public function addPattern(): ?int
     {
         $params = ['pattern'];
-        $this->post($params, function (array $params) {
-            $this->database->insertPattern($params['pattern']);
+        return $this->post($params, function (array $params) {
+            return $this->database->insertPattern($params['pattern']);
         });
     }
 
+    /**
+     * @return array
+     */
     public function getWords(): array
     {
         return $this->database->getWords();
     }
 
+    /**
+     * @return int|null
+     */
     public function deleteWord(): ?int
     {
         $params = ['word'];
