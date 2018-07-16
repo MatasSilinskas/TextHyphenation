@@ -1,12 +1,12 @@
 <?php
 
-namespace TextHyphenation\Console;
+namespace TextHyphenation\Executables;
 
 use SplFileObject;
 use TextHyphenation\DataProviders\WordsProvider;
 use TextHyphenation\Logger\LoggerInterface;
 
-class Console
+class Console implements ExecutableInterface
 {
     private $tools;
     private $logger;

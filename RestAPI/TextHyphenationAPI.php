@@ -10,8 +10,8 @@ class TextHyphenationAPI extends REST
     private $database;
 
     /**
-     * REST constructor.
-     * @param $database
+     * TextHyphenationAPI constructor.
+     * @param DatabaseProvider $database
      */
     public function __construct(DatabaseProvider $database)
     {

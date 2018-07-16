@@ -3,7 +3,7 @@
 return [
     'hyphenatorLogFile' => 'hyphenator.log',
     'namespaces' => [
-        'TextHyphenation\Console' => '/Console/',
+        'TextHyphenation\Executables' => '/Executables/',
         'TextHyphenation\DataProviders' => '/DataProviders/',
         'TextHyphenation\Hyphenators' => '/Hyphenators/',
         'TextHyphenation\Timer' => '/Timer/',

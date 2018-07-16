@@ -1,6 +1,6 @@
 <?php
 
-namespace TextHyphenation\Console;
+namespace TextHyphenation\Executables;
 
 interface ToolsInterface
 {
