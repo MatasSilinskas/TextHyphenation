@@ -65,4 +65,18 @@ class TextHyphenationAPI extends REST
             return $this->database->deleteWord($params['word']);
         });
     }
+
+    public function getPatterns(): array
+    {
+        return $this->database->getPatterns();
+    }
+
+    public function getPattern(): array
+    {
+        $params = ['id'];
+        var_dump('heree');
+        return $this->get($params, function (array $params) {
+            return $this->database->getPattern($params['id']);
+        });
+    }
 }

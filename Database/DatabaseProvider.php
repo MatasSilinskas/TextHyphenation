@@ -117,6 +117,24 @@ class DatabaseProvider extends Database
         return $this->prepareAndExecute();
     }
 
+    public function getPatterns(): array
+    {
+        $this->queryBuilder
+            ->reset()
+            ->select(['*'])->from(['patterns']);
+
+        return $this->prepareAndExecute();
+    }
+
+    public function getPattern(int $id): array
+    {
+        $this->queryBuilder
+            ->reset()
+            ->select(['*'])->from(['patterns'])
+            ->where('id', [':id' => $id]);
+        return $this->prepareAndExecute();
+    }
+
     /**
      * @return int|null
      */

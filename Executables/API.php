@@ -56,6 +56,13 @@ class API implements ExecutableInterface
     public function executeForPatternsTable(): void
     {
         switch ($this->requestVariables->getMethod()) {
+            case 'GET':
+                if (isset($_GET['id'])) {
+                    echo json_encode($this->rest->getPattern());
+                    break;
+                }
+                echo json_encode($this->rest->getPatterns());
+                break;
             case 'POST':
                 $this->rest->addPattern();
                 break;
