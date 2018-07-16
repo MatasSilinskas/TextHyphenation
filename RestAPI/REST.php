@@ -6,15 +6,26 @@ use TextHyphenation\Database\DatabaseProvider;
 
 class REST
 {
-    private $database;
 
     /**
-     * REST constructor.
-     * @param $database
+     * @param array $keys
+     * @param callable $function
+     * @return array
      */
-    public function __construct(DatabaseProvider $database)
+    protected function get(array $keys, callable $function): array
     {
-        $this->database = $database;
+        $userParams = [];
+        foreach ($keys as $key) {
+            $userParams[$key] = $_GET['id'];
+        }
+
+        $result = $function($userParams);
+
+        if (empty($result)) {
+            http_response_code(404);
+        }
+
+        return $result;
     }
 
     /**

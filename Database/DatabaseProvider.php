@@ -108,6 +108,18 @@ class DatabaseProvider extends Database
         return $this->checkRows();
     }
 
+    public function getWord(int $id): array
+    {
+        $this->queryBuilder
+            ->reset()
+            ->select(['*'])->from(['words'])
+            ->where('id', [':id' => $id]);
+        return $this->prepareAndExecute();
+    }
+
+    /**
+     * @return int|null
+     */
     private function checkRows(): ?int
     {
         if ($this->prepareAndExecute($affectedRows) === false) {

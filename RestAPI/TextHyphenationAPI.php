@@ -14,7 +14,6 @@ class TextHyphenationAPI extends REST
      */
     public function __construct(DatabaseProvider $database)
     {
-        parent::__construct($database);
         $this->database = $database;
     }
 
@@ -46,6 +45,14 @@ class TextHyphenationAPI extends REST
     public function getWords(): array
     {
         return $this->database->getWords();
+    }
+
+    public function getWord(): array
+    {
+        $params = ['id'];
+        return $this->get($params, function (array $params) {
+            return $this->database->getWord($params['id']);
+        });
     }
 
     /**

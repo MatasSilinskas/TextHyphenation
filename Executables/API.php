@@ -26,7 +26,7 @@ class API implements ExecutableInterface
 
     public function execute(): void
     {
-        $table = end(explode('/', $this->requestVariables->getURI()));
+        $table = explode('/', $this->requestVariables->getURI())[2];
         switch ($table) {
             case self::PATTERNS_TABLE:
                 $this->executeForPatternsTable();
@@ -41,6 +41,10 @@ class API implements ExecutableInterface
     {
         switch ($this->requestVariables->getMethod()) {
             case 'GET':
+                if (isset($_GET['id'])) {
+                    echo json_encode($this->rest->getWord());
+                    break;
+                }
                 echo json_encode($this->rest->getWords());
                 break;
             case 'DELETE':
