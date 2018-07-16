@@ -9,6 +9,9 @@ class API implements ExecutableInterface
 {
     private $rest;
 
+    private const PATTERNS_TABLE = 'patterns';
+    private const WORDS_TABLE = 'words';
+
     /**
      * API constructor.
      * @param TextHyphenationAPI $rest
@@ -22,10 +25,10 @@ class API implements ExecutableInterface
     {
         $table = end(explode('/', $_SERVER['REQUEST_URI']));
         switch ($table) {
-            case 'patterns':
+            case self::PATTERNS_TABLE:
                 $this->executeForPatternsTable();
                 break;
-            case 'words':
+            case self::WORDS_TABLE:
                 $this->executeForWordsTable();
                 break;
         }
@@ -35,7 +38,6 @@ class API implements ExecutableInterface
     {
         switch ($_SERVER['REQUEST_METHOD']) {
             case 'GET':
-                var_dump('aa');
                 echo json_encode($this->rest->getWords());
                 break;
             case 'DELETE':
