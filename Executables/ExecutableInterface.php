@@ -5,5 +5,5 @@ namespace TextHyphenation\Executables;
 
 interface ExecutableInterface
 {
-    public function execute();
+    public function execute(): void;
 }

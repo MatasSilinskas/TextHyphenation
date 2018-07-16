@@ -137,7 +137,7 @@ class QueryBuilder
      * @param string $operator
      * @return QueryBuilder
      */
-    private function addWhere(string $column, $params, string $operator = 'WHERE') : self
+    private function addWhere(string $column, $params, string $operator = 'WHERE'): self
     {
         if (is_array($params)) {
             $key = array_keys($params)[0];

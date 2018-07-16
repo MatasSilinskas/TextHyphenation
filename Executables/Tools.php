@@ -32,7 +32,7 @@ class Tools implements ToolsInterface
      * @return array
      * @throws \Exception
      */
-    public function modify(string $sentence) : array
+    public function modify(string $sentence): array
     {
         $this->timer->reset();
         $this->timer->start();
@@ -51,7 +51,7 @@ class Tools implements ToolsInterface
      * @return array
      * @throws \Exception
      */
-    public function modifyMany(array $sentences) : array
+    public function modifyMany(array $sentences): array
     {
         $this->timer->reset();
         $this->timer->start();
@@ -69,7 +69,7 @@ class Tools implements ToolsInterface
         ];
     }
 
-    public function importPatterns() : void
+    public function importPatterns(): void
     {
         $patternsProvider = new PatternsProvider;
         $this->database->importPatterns($patternsProvider->getData());
@@ -86,7 +86,7 @@ class Tools implements ToolsInterface
     /**
      * @param bool $useDatabase
      */
-    public function setUseDatabase(bool $useDatabase) : void
+    public function setUseDatabase(bool $useDatabase): void
     {
         $this->useDatabase = $useDatabase;
     }
@@ -95,7 +95,7 @@ class Tools implements ToolsInterface
      * @param string $sentence
      * @return array
      */
-    private function hyphenateSentence(string $sentence) : array
+    private function hyphenateSentence(string $sentence): array
     {
         $result = [];
         $result['hyphenated'] = '';
@@ -129,7 +129,7 @@ class Tools implements ToolsInterface
      * @param array $separators
      * @return array
      */
-    private function splitSentence(string $sentence, array &$separators = [])
+    private function splitSentence(string $sentence, array &$separators = []): array
     {
         $separators = preg_split('#(\w+)#', $sentence);
         array_shift($separators);

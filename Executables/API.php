@@ -21,7 +21,7 @@ class API implements ExecutableInterface
         $this->rest = $rest;
     }
 
-    public function execute()
+    public function execute(): void
     {
         $table = end(explode('/', $_SERVER['REQUEST_URI']));
         switch ($table) {
@@ -34,7 +34,7 @@ class API implements ExecutableInterface
         }
     }
 
-    public function executeForWordsTable()
+    public function executeForWordsTable(): void
     {
         switch ($_SERVER['REQUEST_METHOD']) {
             case 'GET':
@@ -46,7 +46,7 @@ class API implements ExecutableInterface
         }
     }
 
-    public function executeForPatternsTable()
+    public function executeForPatternsTable(): void
     {
         switch ($_SERVER['REQUEST_METHOD']) {
             case 'POST':

@@ -9,5 +9,5 @@ interface HyphenatorInterface
      * @param array $usedPatterns
      * @return string
      */
-    public function hyphenate(string $word, array &$usedPatterns = []) : string;
+    public function hyphenate(string $word, array &$usedPatterns = []): string;
 }

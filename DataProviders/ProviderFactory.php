@@ -9,7 +9,7 @@ class ProviderFactory
      * @return FileProvider
      * @throws \Exception
      */
-    public static function create(string $dataType) : FileProvider
+    public static function create(string $dataType): FileProvider
     {
         $dataType = strtolower($dataType);
         if ($dataType === 'patterns') {

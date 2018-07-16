@@ -36,7 +36,7 @@ abstract class Database
     /**
      * @param string $database
      */
-    public function createDatabase(string $database) : void
+    public function createDatabase(string $database): void
     {
         $this->database->exec("CREATE DATABASE IF NOT EXISTS $database");
         $this->database->exec("USE $database");

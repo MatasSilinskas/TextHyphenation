@@ -23,7 +23,7 @@ class Console implements ExecutableInterface
         $this->logger = $logger;
     }
 
-    public function execute() : void
+    public function execute(): void
     {
         echo "Choose an option (DEFAULT - 3):\n";
         echo "1) Use file\n";
@@ -51,12 +51,12 @@ class Console implements ExecutableInterface
     /**
      * @return string
      */
-    private function getConsoleInput() : string
+    private function getConsoleInput(): string
     {
         return substr(fgets(STDIN), 0, -1);
     }
 
-    private function takeInputFromUser() : void
+    private function takeInputFromUser(): void
     {
         while (true) {
             echo 'Enter a word you want to hyphenate (or enter :exit to leave): ';
@@ -83,7 +83,7 @@ class Console implements ExecutableInterface
         }
     }
 
-    private function takeInputFromFile() : void
+    private function takeInputFromFile(): void
     {
         echo "Working on it...\n";
         $wordsProvider = new WordsProvider();

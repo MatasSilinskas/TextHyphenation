@@ -23,7 +23,7 @@ class RegexHyphenator extends Hyphenator
      * @param string $pattern
      * @return string
      */
-    protected function normalizePattern(string $pattern) : string
+    protected function normalizePattern(string $pattern): string
     {
         return preg_replace(self::SEARCH_FOR, '', $pattern);
     }
@@ -33,7 +33,7 @@ class RegexHyphenator extends Hyphenator
      * @param string $word
      * @param string $pattern
      */
-    protected function putHyphenPosition(array &$data, string $word, string $pattern) : void
+    protected function putHyphenPosition(array &$data, string $word, string $pattern): void
     {
         $needle = $this->normalizePattern($pattern);
         preg_match('#\d+#', $pattern, $numbers);

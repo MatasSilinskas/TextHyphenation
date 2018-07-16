@@ -13,7 +13,7 @@ class Validator
      * @param string $email
      * @return bool
      */
-    public function isValid(string $email) : bool
+    public function isValid(string $email): bool
     {
         if (preg_match('#^(((\w+)[.]?)+|"(.*)")@(\w+)[.](\w){2,3}$#', $email) === 1) {
             return true;
