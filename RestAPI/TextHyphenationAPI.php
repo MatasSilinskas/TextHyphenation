@@ -74,7 +74,6 @@ class TextHyphenationAPI extends REST
     public function getPattern(): array
     {
         $params = ['id'];
-        var_dump('heree');
         return $this->get($params, function (array $params) {
             return $this->database->getPattern($params['id']);
         });
