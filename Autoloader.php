@@ -41,13 +41,13 @@ class Autoloader
      */
     public function addNameSpace(string $prefix, string $directory) : void
     {
-        $this->directories[$prefix][] = $directory;
+        $this->directories[$prefix][] = str_replace('/', '\\', $directory);
     }
 
     public function addNameSpaces(array $namespaces) : void
     {
         foreach ($namespaces as $key => $value) {
-            $this->addNameSpace($key, __DIR__ . DIRECTORY_SEPARATOR . $value);
+            $this->addNameSpace($key, __DIR__ . $value);
         }
     }
 }

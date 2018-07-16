@@ -62,9 +62,10 @@ abstract class Database
 
     /**
      * @param array $params
-     * @return array
+     * @param int $affectedRows
+     * @return array|bool
      */
-    public function execute(array $params): array
+    public function execute(array $params, &$affectedRows = 0)
     {
         foreach ($params as $key => $value) {
             $this->statement->bindValue($key, $value);
@@ -73,9 +74,17 @@ abstract class Database
         if (($result = $this->statement->fetchAll(PDO::FETCH_ASSOC)) === false) {
             if ($this->database->inTransaction()) {
                 $this->transactionFailed = true;
+                return false;
             }
         }
+
+        $affectedRows = $this->statement->rowCount();
         return $result;
+    }
+
+    public function executeAndGet(array $params)
+    {
+
     }
 
     /**

@@ -7,13 +7,12 @@ class ArrayCachePool implements CacheInterface
     private $pool = [];
 
     /**
-     * @param $key
+     * @param string $key
      * @param null $default
-     * @return mixed
-     *
+     * @return mixed|null
      * @throws InvalidArgumentException
      */
-    public function get($key, $default = null)
+    public function get(string $key, $default = null)
     {
         $this->validateKey($key);
         if ($this->pool[$key] === null) {

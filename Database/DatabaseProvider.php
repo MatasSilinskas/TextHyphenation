@@ -33,7 +33,7 @@ class DatabaseProvider extends Database
      * @param array $usedPatterns
      * @return bool
      */
-    public function insertWord(string $word, string $hyphenated, array $usedPatterns) : bool
+    public function insertWord(string $word, string $hyphenated, array $usedPatterns): bool
     {
         $patternsIds = $this->getPatternsIds($usedPatterns);
         $this->beginTransaction();
@@ -47,7 +47,7 @@ class DatabaseProvider extends Database
      * @param string $word
      * @return array|null
      */
-    public function searchWord(string $word) : ?array
+    public function searchWord(string $word): ?array
     {
         $result = $this->findWord($word);
         if (!empty($result)) {
@@ -59,7 +59,64 @@ class DatabaseProvider extends Database
         return null;
     }
 
-    private function createTables() : void
+    public function getWords(): array
+    {
+        $this->queryBuilder
+            ->reset()
+            ->select(['*'])->from(['words']);
+
+        return $this->prepareAndExecute();
+    }
+
+    /**
+     * @param string $word
+     * @return int|null
+     */
+    public function deleteWord(string $word): ?int
+    {
+        $this->queryBuilder
+            ->reset()
+            ->delete()->from(['words'])
+            ->where('word', [':word' => $word]);
+
+        return $this->checkRows();
+    }
+
+    /**
+     * @param string $pattern
+     */
+    public function insertPattern(string $pattern): void
+    {
+        $this->queryBuilder
+            ->reset()
+            ->insert('patterns', ['pattern'], [':pattern' => $pattern]);
+
+        $this->prepareAndExecute();
+    }
+
+    /**
+     * @param array $params
+     * @return int|null
+     */
+    public function updatePattern(array $params): ?int
+    {
+        $this->queryBuilder
+            ->reset()
+            ->update('patterns', ['pattern'], [':new' => $params['newPattern']])
+            ->where('pattern', [':old' => $params['oldPattern']]);
+        return $this->checkRows();
+    }
+
+    private function checkRows(): ?int
+    {
+        if ($this->prepareAndExecute($affectedRows) === false) {
+            return null;
+        }
+
+        return $affectedRows;
+    }
+
+    private function createTables(): void
     {
         $this->createTable('patterns', [
             'id INT(11) AUTO_INCREMENT PRIMARY KEY',
@@ -78,7 +135,7 @@ class DatabaseProvider extends Database
         ]);
     }
 
-    private function dropTables() : void
+    private function dropTables(): void
     {
         $this->dropTable('patterns_words');
         $this->dropTable('patterns');
@@ -86,13 +143,14 @@ class DatabaseProvider extends Database
     }
 
     /**
+     * @param int $affectedRows
      * @return array
      */
-    private function prepareAndExecute(): array
+    private function prepareAndExecute(&$affectedRows = 0): array
     {
         $result = $this
             ->prepare($this->queryBuilder->getQuery())
-            ->execute($this->queryBuilder->getParams());
+            ->execute($this->queryBuilder->getParams(),$affectedRows);
 
         $this->queryBuilder->reset();
         return $result;
@@ -194,6 +252,7 @@ class DatabaseProvider extends Database
     private function findPatterns(int $wordId): array
     {
         $this->queryBuilder
+            ->reset()
             ->select(['pattern'])->from(['patterns', 'patterns_words'])
             ->where('pattern_id', 'id')
             ->andWhere('word_id', $wordId);

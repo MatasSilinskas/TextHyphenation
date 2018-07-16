@@ -65,9 +65,33 @@ class QueryBuilder
         return $this->addWhere($column, $params);
     }
 
+    /**
+     * @param string $column
+     * @param $params
+     * @return QueryBuilder
+     */
     public function andWhere(string $column, $params): self
     {
         return $this->addWhere($column, $params, 'AND');
+    }
+
+    /**
+     * @param string $table
+     * @param array $columns
+     * @param $params
+     * @return QueryBuilder
+     */
+    public function update(string $table, array $columns, $params): self
+    {
+        $this->query .= "UPDATE $table SET";
+        $keys = array_keys($params);
+        foreach ($columns as $column) {
+            $key = array_shift($keys);
+            $this->query .= " $column = $key," ;
+            $this->params[$key] = $params[$key];
+        }
+        $this->query[strlen($this->query) - 1] = ' ';
+        return $this;
     }
 
     /**
