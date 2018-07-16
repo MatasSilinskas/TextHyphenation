@@ -84,7 +84,6 @@ abstract class Database
 
     public function executeAndGet(array $params)
     {
-
     }
 
     /**

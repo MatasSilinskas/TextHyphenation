@@ -65,8 +65,8 @@ class REST
      */
     private function getInputParam(string $param): string
     {
-        parse_str(file_get_contents("php://input"),$post_vars);
-        $vars = array_shift($post_vars) . '';
+        parse_str(file_get_contents("php://input"), $info);
+        $vars = array_shift($info) . '';
         preg_match('#"' . $param . '"(?:\W+)(\w+)#i', $vars, $match);
         return $match[1];
     }

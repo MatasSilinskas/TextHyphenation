@@ -2,7 +2,6 @@
 
 namespace TextHyphenation\RestAPI;
 
-
 use TextHyphenation\Database\DatabaseProvider;
 
 class TextHyphenationAPI extends REST

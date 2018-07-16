@@ -151,7 +151,7 @@ class DatabaseProvider extends Database
     {
         $result = $this
             ->prepare($this->queryBuilder->getQuery())
-            ->execute($this->queryBuilder->getParams(),$affectedRows);
+            ->execute($this->queryBuilder->getParams(), $affectedRows);
 
         $this->queryBuilder->reset();
         return $result;

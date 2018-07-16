@@ -2,7 +2,6 @@
 
 namespace TextHyphenation\Executables;
 
-
 use TextHyphenation\RestAPI\TextHyphenationAPI;
 
 class API implements ExecutableInterface
@@ -12,6 +11,8 @@ class API implements ExecutableInterface
     private const PATTERNS_TABLE = 'patterns';
     private const WORDS_TABLE = 'words';
 
+    private $requestVariables;
+
     /**
      * API constructor.
      * @param TextHyphenationAPI $rest
@@ -19,11 +20,13 @@ class API implements ExecutableInterface
     public function __construct(TextHyphenationAPI $rest)
     {
         $this->rest = $rest;
+        $this->requestVariables = new RequestVariables;
+
     }
 
     public function execute(): void
     {
-        $table = end(explode('/', $_SERVER['REQUEST_URI']));
+        $table = end(explode('/', $this->requestVariables->getURI()));
         switch ($table) {
             case self::PATTERNS_TABLE:
                 $this->executeForPatternsTable();
@@ -36,7 +39,7 @@ class API implements ExecutableInterface
 
     public function executeForWordsTable(): void
     {
-        switch ($_SERVER['REQUEST_METHOD']) {
+        switch ($this->requestVariables->getMethod()) {
             case 'GET':
                 echo json_encode($this->rest->getWords());
                 break;
@@ -48,7 +51,7 @@ class API implements ExecutableInterface
 
     public function executeForPatternsTable(): void
     {
-        switch ($_SERVER['REQUEST_METHOD']) {
+        switch ($this->requestVariables->getMethod()) {
             case 'POST':
                 $this->rest->addPattern();
                 break;
