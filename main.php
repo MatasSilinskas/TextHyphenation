@@ -4,6 +4,7 @@ require_once 'Autoloader.php';
 
 use Loader\Autoloader;
 use TextHyphenation\Cache\ArrayCachePool;
+use TextHyphenation\Cache\CacheInterface;
 use TextHyphenation\Container\Container;
 use TextHyphenation\Executables\API;
 use TextHyphenation\Executables\Console;
@@ -11,14 +12,14 @@ use TextHyphenation\Executables\Tools;
 use TextHyphenation\Database\DatabaseProvider;
 use TextHyphenation\DataProviders\PatternsProvider;
 use TextHyphenation\Executables\ToolsInterface;
-use TextHyphenation\Hyphenators\CachingHyphenator;
+use TextHyphenation\Hyphenators\Cache;
 use TextHyphenation\Hyphenators\Hyphenator;
 use TextHyphenation\Hyphenators\HyphenatorInterface;
+use TextHyphenation\Hyphenators\Log;
 use TextHyphenation\Hyphenators\ProxyHyphenator;
 use TextHyphenation\Hyphenators\RegexHyphenator;
 use TextHyphenation\Logger\FileLogger;
 use TextHyphenation\Logger\LoggerInterface;
-use TextHyphenation\RestAPI\TextHyphenationAPI;
 use TextHyphenation\Timer\Timer;
 
 $config = include 'config.php';
@@ -41,9 +42,18 @@ if (isset($_SERVER['REQUEST_METHOD'])) {
         return new FileLogger($config['hyphenatorLogFile']);
     });
 
+    $container->set(CacheInterface::class, function () use ($config) {
+        return new ArrayCachePool();
+    });
+
     $container->set(HyphenatorInterface::class, function (Container $container) {
         $patternsProvider = $container->get(PatternsProvider::class);
-        return new ProxyHyphenator($patternsProvider->getData());
+        $cache = $container->get(CacheInterface::class);
+        $logger = $container->get(LoggerInterface::class);
+        return new Log(
+            new Cache(new ProxyHyphenator($patternsProvider->getData()), $cache),
+            $logger
+        );
     });
 
     $container->set(ToolsInterface::class, function (Container $container) {

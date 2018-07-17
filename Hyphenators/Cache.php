@@ -3,20 +3,14 @@
 namespace TextHyphenation\Hyphenators;
 
 use TextHyphenation\Cache\CacheInterface;
-use TextHyphenation\Cache\InvalidArgumentException;
 
-class CachingHyphenator extends Hyphenator implements HyphenatorInterface
+class Cache extends HyphenatorDecorator
 {
     private $cache;
 
-    /**
-     * CachingHyphenator constructor.
-     * @param array $patterns
-     * @param CacheInterface $cache
-     */
-    public function __construct(array $patterns, CacheInterface $cache)
+    public function __construct(HyphenatorInterface $hyphenator, CacheInterface $cache)
     {
-        parent::__construct($patterns);
+        parent::__construct($hyphenator);
         $this->cache = $cache;
     }
 
@@ -24,7 +18,7 @@ class CachingHyphenator extends Hyphenator implements HyphenatorInterface
      * @param string $word
      * @param array $usedPatterns
      * @return string
-     * @throws InvalidArgumentException
+     * @throws \TextHyphenation\Cache\InvalidArgumentException
      */
     public function hyphenate(string $word, array &$usedPatterns = []): string
     {
@@ -32,7 +26,7 @@ class CachingHyphenator extends Hyphenator implements HyphenatorInterface
             return $this->cache->get($word);
         }
 
-        $hyphenated = parent::hyphenate($word, $usedPatterns);
+        $hyphenated = $this->getHyphenator()->hyphenate($word, $usedPatterns);
         $this->cache->set($word, $hyphenated);
         return $hyphenated;
     }

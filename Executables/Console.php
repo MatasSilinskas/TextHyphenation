@@ -9,18 +9,15 @@ use TextHyphenation\Logger\LoggerInterface;
 class Console implements ExecutableInterface
 {
     private $tools;
-    private $logger;
     private const POSITIVE_ANSWER = 'yes';
 
     /**
      * Console constructor.
      * @param ToolsInterface $tools
-     * @param LoggerInterface $logger
      */
-    public function __construct(ToolsInterface $tools, LoggerInterface $logger)
+    public function __construct(ToolsInterface $tools)
     {
         $this->tools = $tools;
-        $this->logger = $logger;
     }
 
     public function execute(): void
@@ -66,10 +63,6 @@ class Console implements ExecutableInterface
             }
 
             $result = $this->tools->modify($input);
-
-            if ($input === $result['result']) {
-                $this->logger->warning("Hyphenated form of the word $input is equal to it`s original form.");
-            }
 
             echo $result['result'] . "\n";
             if (isset($result['patterns']) && !empty($result['patterns'])) {
