@@ -20,7 +20,6 @@ class ProxyHyphenator implements HyphenatorInterface
         $this->patterns = $patterns;
     }
 
-
     /**
      * @param string $word
      * @param array $usedPatterns
@@ -32,7 +31,7 @@ class ProxyHyphenator implements HyphenatorInterface
         return $this->hyphenator->hyphenate($word, $usedPatterns);
     }
 
-    private function lazyLoad()
+    private function lazyLoad(): void
     {
         if ($this->hyphenator === NULL) {
             $this->hyphenator = new Hyphenator($this->patterns);

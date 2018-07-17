@@ -12,6 +12,7 @@ return [
         'TextHyphenation\Logger' => '/Logger/',
         'TextHyphenation\Database' => '/Database/',
         'TextHyphenation\RestAPI' => '/RestAPI/',
+        'TextHyphenation\Container' => '/Container/',
     ],
     'databaseConfig' => [
         'dsn' => 'mysql:host=localhost',

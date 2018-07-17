@@ -4,16 +4,20 @@ require_once 'Autoloader.php';
 
 use Loader\Autoloader;
 use TextHyphenation\Cache\ArrayCachePool;
+use TextHyphenation\Container\Container;
 use TextHyphenation\Executables\API;
 use TextHyphenation\Executables\Console;
 use TextHyphenation\Executables\Tools;
 use TextHyphenation\Database\DatabaseProvider;
 use TextHyphenation\DataProviders\PatternsProvider;
+use TextHyphenation\Executables\ToolsInterface;
 use TextHyphenation\Hyphenators\CachingHyphenator;
 use TextHyphenation\Hyphenators\Hyphenator;
+use TextHyphenation\Hyphenators\HyphenatorInterface;
 use TextHyphenation\Hyphenators\ProxyHyphenator;
 use TextHyphenation\Hyphenators\RegexHyphenator;
 use TextHyphenation\Logger\FileLogger;
+use TextHyphenation\Logger\LoggerInterface;
 use TextHyphenation\RestAPI\TextHyphenationAPI;
 use TextHyphenation\Timer\Timer;
 
@@ -22,26 +26,34 @@ $config = include 'config.php';
 $loader = new Autoloader;
 $loader->addNameSpaces($config['namespaces']);
 
-$database = new DatabaseProvider(
-    $config['databaseConfig']['dsn'],
-    $config['databaseConfig']['username'],
-    $config['databaseConfig']['password']
-);
+$container = new Container();
+$container->set(DatabaseProvider::class, function () use ($config) {
+    return new DatabaseProvider(
+        $config['databaseConfig']['dsn'],
+        $config['databaseConfig']['username'],
+        $config['databaseConfig']['password']);
+});
 
 if (isset($_SERVER['REQUEST_METHOD'])) {
-    $rest = new TextHyphenationAPI($database);
-    $executable = new API($rest);
+    $executable = $container->get(API::class);
 } else {
-    $logger = new FileLogger($config['hyphenatorLogFile']);
-    $cache = new ArrayCachePool;
-    $patternsProvider = new PatternsProvider;
+    $container->set(LoggerInterface::class, function () use ($config) {
+        return new FileLogger($config['hyphenatorLogFile']);
+    });
 
-    $hyphenator = new ProxyHyphenator($patternsProvider->getData());
-    $timer = new Timer;
+    $container->set(HyphenatorInterface::class, function (Container $container) {
+        $patternsProvider = $container->get(PatternsProvider::class);
+        return new ProxyHyphenator($patternsProvider->getData());
+    });
 
-    $tools = new Tools($hyphenator, $timer, $database);
+    $container->set(ToolsInterface::class, function (Container $container) {
+        $hyphenator = $container->get(HyphenatorInterface::class);
+        $database = $container->get(DatabaseProvider::class);
+        $timer = $container->get(Timer::class);
+        return new Tools($hyphenator, $timer, $database);
+    });
 
-    $executable = new Console($tools, $logger);
+    $executable = $container->get(Console::class);
 }
 
 $executable->execute();
