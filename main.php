@@ -11,6 +11,7 @@ use TextHyphenation\Database\DatabaseProvider;
 use TextHyphenation\DataProviders\PatternsProvider;
 use TextHyphenation\Hyphenators\CachingHyphenator;
 use TextHyphenation\Hyphenators\Hyphenator;
+use TextHyphenation\Hyphenators\ProxyHyphenator;
 use TextHyphenation\Hyphenators\RegexHyphenator;
 use TextHyphenation\Logger\FileLogger;
 use TextHyphenation\RestAPI\TextHyphenationAPI;
@@ -35,7 +36,7 @@ if (isset($_SERVER['REQUEST_METHOD'])) {
     $cache = new ArrayCachePool;
     $patternsProvider = new PatternsProvider;
 
-    $hyphenator = new Hyphenator($patternsProvider->getData());
+    $hyphenator = new ProxyHyphenator($patternsProvider->getData());
     $timer = new Timer;
 
     $tools = new Tools($hyphenator, $timer, $database);

@@ -3,6 +3,6 @@ DirectoryIndex rest.php
   RewriteEngine On
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteRule ^(words|patterns)/([0-9]+)/?$ main.php?id=$2 [L]
+  RewriteRule ^(?:words|patterns)/([0-9]+)/?$ main.php?id=$1 [L]
   RewriteRule ^(words|patterns)/?$ main.php [L]
 </IfModule>
