@@ -2,9 +2,7 @@
 
 namespace TextHyphenation\RestAPI;
 
-use TextHyphenation\Database\DatabaseProvider;
-
-class REST
+abstract class REST
 {
 
     /**

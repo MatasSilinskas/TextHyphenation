@@ -35,12 +35,10 @@ class Container implements ContainerInterface
         try {
             $reflector = new ReflectionClass($id);
         } catch (ReflectionException $exception) {
-            var_dump($id);
             throw new ClassNotFoundException();
         }
 
         if (!$reflector->isInstantiable()) {
-            var_dump($id);
             throw new ClassNotFoundException();
         }
 
@@ -54,7 +52,6 @@ class Container implements ContainerInterface
         $dependencies = array_map(
             function (ReflectionParameter $dependency) use ($id) {
                 if ($dependency->getClass() === null) {
-                    var_dump($id);
                     throw new ClassNotFoundException();
                 }
 
