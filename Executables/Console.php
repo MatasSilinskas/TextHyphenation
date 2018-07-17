@@ -4,20 +4,19 @@ namespace TextHyphenation\Executables;
 
 use SplFileObject;
 use TextHyphenation\DataProviders\WordsProvider;
-use TextHyphenation\Logger\LoggerInterface;
 
 class Console implements ExecutableInterface
 {
-    private $tools;
+    private $facade;
     private const POSITIVE_ANSWER = 'yes';
 
     /**
      * Console constructor.
-     * @param ToolsInterface $tools
+     * @param FacadeInterface $tools
      */
-    public function __construct(ToolsInterface $tools)
+    public function __construct(FacadeInterface $tools)
     {
-        $this->tools = $tools;
+        $this->facade = $tools;
     }
 
     public function execute(): void
@@ -32,11 +31,11 @@ class Console implements ExecutableInterface
                 $this->takeInputFromFile();
                 break;
             case 2:
-                $this->tools->setUseDatabase(true);
+                $this->facade->setDatabaseUsage(true);
                 echo 'Would you like to import patterns from file?[yes/NO]';
                 $answer = strtolower($this->getConsoleInput());
-                if ($answer === $this::POSITIVE_ANSWER) {
-                    $this->tools->importPatterns();
+                if ($answer === self::POSITIVE_ANSWER) {
+                    $this->facade->importPatterns();
                 }
                 $this->takeInputFromUser();
                 break;
@@ -62,7 +61,7 @@ class Console implements ExecutableInterface
                 break;
             }
 
-            $result = $this->tools->modify($input);
+            $result = $this->facade->hyphenate($input);
 
             echo $result['result'] . "\n";
             if (isset($result['patterns']) && !empty($result['patterns'])) {
@@ -82,7 +81,7 @@ class Console implements ExecutableInterface
         $wordsProvider = new WordsProvider();
         $words = $wordsProvider->getData();
 
-        $result = $this->tools->modifyMany($words);
+        $result = $this->facade->hyphenateMany($words);
 
         if (isset($result['time'])) {
             echo 'The process took ' . $result['time'] . " seconds\n";

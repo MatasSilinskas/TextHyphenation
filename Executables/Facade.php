@@ -7,15 +7,15 @@ use TextHyphenation\DataProviders\PatternsProvider;
 use TextHyphenation\Hyphenators\HyphenatorInterface;
 use TextHyphenation\Timer\Timer;
 
-class Tools implements ToolsInterface
+class Facade implements FacadeInterface
 {
     private $hyphenator;
     private $timer;
     private $database;
-    private $useDatabase = false;
+    private $databaseUsage = false;
 
     /**
-     * Tools constructor.
+     * Facade constructor.
      * @param HyphenatorInterface $hyphenator
      * @param Timer $timer
      * @param DatabaseProvider $database
@@ -32,7 +32,7 @@ class Tools implements ToolsInterface
      * @return array
      * @throws \Exception
      */
-    public function modify(string $sentence): array
+    public function hyphenate(string $sentence): array
     {
         $this->timer->reset();
         $this->timer->start();
@@ -51,7 +51,7 @@ class Tools implements ToolsInterface
      * @return array
      * @throws \Exception
      */
-    public function modifyMany(array $sentences): array
+    public function hyphenateMany(array $sentences): array
     {
         $this->timer->reset();
         $this->timer->start();
@@ -78,17 +78,17 @@ class Tools implements ToolsInterface
     /**
      * @return bool
      */
-    public function isUseDatabase(): bool
+    public function isDatabaseUsed(): bool
     {
-        return $this->useDatabase;
+        return $this->databaseUsage;
     }
 
     /**
-     * @param bool $useDatabase
+     * @param bool $databaseUsage
      */
-    public function setUseDatabase(bool $useDatabase): void
+    public function setDatabaseUsage(bool $databaseUsage): void
     {
-        $this->useDatabase = $useDatabase;
+        $this->databaseUsage = $databaseUsage;
     }
 
     /**
@@ -103,7 +103,7 @@ class Tools implements ToolsInterface
         $separators = [];
         $words = $this->splitSentence($sentence, $separators);
         foreach ($words as $word) {
-            if ($this->useDatabase) {
+            if ($this->databaseUsage) {
                 if (($dbWord = $this->database->searchWord($word)) !== null) {
                     $result['hyphenated'] .= $dbWord['hyphenated'] . array_shift($separators);
                     $result['patterns'][$word] = $dbWord['patterns'];
