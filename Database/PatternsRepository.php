@@ -2,7 +2,6 @@
 
 namespace TextHyphenation\Database;
 
-
 class PatternsRepository extends Repository
 {
     /**

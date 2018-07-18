@@ -23,8 +23,12 @@ class Facade implements FacadeInterface
      * @param WordsRepository $wordsRepository
      * @param PatternsRepository $patternsRepository
      */
-    public function __construct(HyphenatorInterface $hyphenator, Timer $timer, WordsRepository $wordsRepository, PatternsRepository $patternsRepository)
-    {
+    public function __construct(
+        HyphenatorInterface $hyphenator,
+        Timer $timer,
+        WordsRepository $wordsRepository,
+        PatternsRepository $patternsRepository
+    ) {
         $this->hyphenator = $hyphenator;
         $this->timer = $timer;
         $this->wordsRepository = $wordsRepository;

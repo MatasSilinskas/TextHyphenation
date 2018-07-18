@@ -34,5 +34,4 @@ abstract class DataConverter
      * @return array|null
      */
     abstract protected function processDecoding(string $data): ?array;
-
 }

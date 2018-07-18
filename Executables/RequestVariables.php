@@ -2,7 +2,6 @@
 
 namespace TextHyphenation\Executables;
 
-
 class RequestVariables
 {
     private $server;

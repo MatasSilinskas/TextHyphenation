@@ -2,7 +2,6 @@
 
 namespace TextHyphenation\Cache;
 
-
 class NullCachePool implements CacheInterface
 {
 

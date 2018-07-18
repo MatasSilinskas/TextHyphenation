@@ -2,7 +2,6 @@
 
 namespace TextHyphenation\Database;
 
-
 abstract class Repository
 {
     protected $database;
@@ -39,5 +38,4 @@ abstract class Repository
         $this->queryBuilder->reset();
         return $result;
     }
-
 }

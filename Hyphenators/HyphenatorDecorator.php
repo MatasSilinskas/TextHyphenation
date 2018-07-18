@@ -2,7 +2,6 @@
 
 namespace TextHyphenation\Hyphenators;
 
-
 abstract class HyphenatorDecorator implements HyphenatorInterface
 {
     private $hyphenator;

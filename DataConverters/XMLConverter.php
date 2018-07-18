@@ -12,6 +12,6 @@ class XMLConverter extends DataConverter
     {
         $xml = simplexml_load_string($data, 'SimpleXMLElement', LIBXML_NOCDATA);
         $json = json_encode($xml);
-        return json_decode($json,TRUE);
+        return json_decode($json, true);
     }
 }

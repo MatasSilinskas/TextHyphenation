@@ -35,7 +35,8 @@ $container->set(TextHyphenationDatabase::class, function () use ($config) {
     return new TextHyphenationDatabase(
         $config['databaseConfig']['dsn'],
         $config['databaseConfig']['username'],
-        $config['databaseConfig']['password']);
+        $config['databaseConfig']['password']
+    );
 });
 $container->set(LoggerInterface::class, function () use ($config) {
     return new FileLogger($config['hyphenatorLogFile']);

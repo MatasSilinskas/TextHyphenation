@@ -2,7 +2,6 @@
 
 namespace TextHyphenation\Database;
 
-
 class TextHyphenationDatabase extends Database
 {
     public function __construct(string $dsn, string $username, string $password)

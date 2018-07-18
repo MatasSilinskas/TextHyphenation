@@ -2,7 +2,6 @@
 
 namespace TextHyphenation\Controllers;
 
-
 use TextHyphenation\Database\WordsRepository;
 use TextHyphenation\DataConverters\DataConverter;
 

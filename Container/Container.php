@@ -56,7 +56,8 @@ class Container implements ContainerInterface
                 }
 
                 return $this->get($dependency->getClass()->getName());
-            }, $constructor->getParameters()
+            },
+            $constructor->getParameters()
         );
 
         return $reflector->newInstanceArgs($dependencies);

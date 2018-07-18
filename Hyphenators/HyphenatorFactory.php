@@ -2,7 +2,6 @@
 
 namespace TextHyphenation\Hyphenators;
 
-
 class HyphenatorFactory
 {
     private $patterns;
@@ -33,5 +32,4 @@ class HyphenatorFactory
 
         throw new NotImplementedException();
     }
-
 }

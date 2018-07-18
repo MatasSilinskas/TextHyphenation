@@ -2,7 +2,6 @@
 
 namespace TextHyphenation\Hyphenators;
 
-
 class ProxyHyphenator implements HyphenatorInterface
 {
     /**
@@ -33,7 +32,7 @@ class ProxyHyphenator implements HyphenatorInterface
 
     private function lazyLoad(): void
     {
-        if ($this->hyphenator === NULL) {
+        if ($this->hyphenator === null) {
             $this->hyphenator = new Hyphenator($this->patterns);
         }
     }
