@@ -16,16 +16,14 @@ abstract class DataConverter
 
     /**
      * @param string $data
-     * @return array
+     * @return array|null
      */
-    final public function decode(string $data): array
+    final public function decode(string $data): ?array
     {
         $processed = $this->processDecoding($data);
 
-        if ($processed === null) {
-            if ($this->successor !== null) {
-                $processed = $this->successor->decode($data);
-            }
+        if ($processed === null && $this->successor !== null) {
+            $processed = $this->successor->decode($data);
         }
 
         return $processed;
