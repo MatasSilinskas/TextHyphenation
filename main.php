@@ -13,11 +13,9 @@ use TextHyphenation\Database\DatabaseProvider;
 use TextHyphenation\DataProviders\PatternsProvider;
 use TextHyphenation\Executables\FacadeInterface;
 use TextHyphenation\Hyphenators\Cache;
-use TextHyphenation\Hyphenators\Hyphenator;
+use TextHyphenation\Hyphenators\HyphenatorFactory;
 use TextHyphenation\Hyphenators\HyphenatorInterface;
 use TextHyphenation\Hyphenators\Log;
-use TextHyphenation\Hyphenators\ProxyHyphenator;
-use TextHyphenation\Hyphenators\RegexHyphenator;
 use TextHyphenation\Logger\FileLogger;
 use TextHyphenation\Logger\LoggerInterface;
 use TextHyphenation\Timer\Timer;
@@ -42,12 +40,17 @@ $container->set(CacheInterface::class, function () use ($config) {
     return new ArrayCachePool();
 });
 
-$container->set(HyphenatorInterface::class, function (Container $container) {
+$container->set(HyphenatorFactory::class, function (Container $container) {
     $patternsProvider = $container->get(PatternsProvider::class);
+    return new HyphenatorFactory($patternsProvider->getData());
+});
+
+$container->set(HyphenatorInterface::class, function (Container $container) use ($config) {
     $cache = $container->get(CacheInterface::class);
     $logger = $container->get(LoggerInterface::class);
+    $factory = $container->get(HyphenatorFactory::class);
     return new Log(
-        new Cache(new ProxyHyphenator($patternsProvider->getData()), $cache),
+        new Cache($factory->createHyphenator($config['hyphenatorType']), $cache),
         $logger
     );
 });

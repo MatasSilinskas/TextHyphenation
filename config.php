@@ -18,5 +18,6 @@ return [
         'dsn' => 'mysql:host=localhost',
         'username' => 'root',
         'password' => 'password',
-    ]
+    ],
+    'hyphenatorType' => 'normal'
 ];
