@@ -2,10 +2,21 @@
 
 namespace TextHyphenation\RestAPI;
 
-use SimpleXMLElement;
+use TextHyphenation\DataConverters\DataConverter;
 
 abstract class REST
 {
+    private $dataConverter;
+
+    /**
+     * REST constructor.
+     * @param DataConverter $dataConverter
+     */
+    public function __construct(DataConverter $dataConverter)
+    {
+        $this->dataConverter = $dataConverter;
+    }
+
 
     /**
      * @param array $keys
@@ -87,13 +98,7 @@ abstract class REST
      */
     private function getUserParams(array $keys): array
     {
-        $input = file_get_contents("php://input");
-        $encoded = json_decode($input, true);
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            $xml = simplexml_load_string($input, 'SimpleXMLElement', LIBXML_NOCDATA);
-            $json = json_encode($xml);
-            $encoded = json_decode($json,TRUE);
-        }
+        $encoded = $this->dataConverter->decode(file_get_contents("php://input"));
         
         $userParams = [];
         foreach ($keys as $key) {

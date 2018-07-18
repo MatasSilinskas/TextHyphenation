@@ -6,6 +6,9 @@ use Loader\Autoloader;
 use TextHyphenation\Cache\ArrayCachePool;
 use TextHyphenation\Cache\CacheInterface;
 use TextHyphenation\Container\Container;
+use TextHyphenation\DataConverters\DataConverter;
+use TextHyphenation\DataConverters\JSONConverter;
+use TextHyphenation\DataConverters\XMLConverter;
 use TextHyphenation\Executables\API;
 use TextHyphenation\Executables\Console;
 use TextHyphenation\Executables\Facade;
@@ -43,6 +46,10 @@ $container->set(CacheInterface::class, function () use ($config) {
 $container->set(HyphenatorFactory::class, function (Container $container) {
     $patternsProvider = $container->get(PatternsProvider::class);
     return new HyphenatorFactory($patternsProvider->getData());
+});
+
+$container->set(DataConverter::class, function () {
+    return new JSONConverter(new XMLConverter());
 });
 
 $container->set(HyphenatorInterface::class, function (Container $container) use ($config) {

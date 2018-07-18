@@ -3,6 +3,7 @@
 namespace TextHyphenation\RestAPI;
 
 use TextHyphenation\Database\DatabaseProvider;
+use TextHyphenation\DataConverters\DataConverter;
 
 class TextHyphenationAPI extends REST
 {
@@ -11,9 +12,11 @@ class TextHyphenationAPI extends REST
     /**
      * TextHyphenationAPI constructor.
      * @param DatabaseProvider $database
+     * @param DataConverter $dataConverter
      */
-    public function __construct(DatabaseProvider $database)
+    public function __construct(DatabaseProvider $database, DataConverter $dataConverter)
     {
+        parent::__construct($dataConverter);
         $this->database = $database;
     }
 

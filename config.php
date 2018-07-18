@@ -13,6 +13,7 @@ return [
         'TextHyphenation\Database' => '/Database/',
         'TextHyphenation\RestAPI' => '/RestAPI/',
         'TextHyphenation\Container' => '/Container/',
+        'TextHyphenation\DataConverters' => '/DataConverters/',
     ],
     'databaseConfig' => [
         'dsn' => 'mysql:host=localhost',
