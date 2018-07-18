@@ -28,14 +28,4 @@ class Router implements ExecutableInterface
         $controller = new $controller($repository, $this->converter);
         echo $controller->$action();
     }
-
-    public function test(): void
-    {
-        $controller = 'TextHyphenation\\Controllers\\' . 'Words' . 'Controller';
-        $repository = 'TextHyphenation\\Database\\' . 'Words' . 'Repository';
-        $action = 'getAction';
-        $repository = new $repository($this->database);
-        $controller = new $controller($repository, $this->converter);
-        echo $controller->$action();
-    }
 }

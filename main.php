@@ -72,10 +72,6 @@ $container->set(FacadeInterface::class, function (Container $container) {
     return new Facade($hyphenator, $timer, $wordsRepository, $patternsRepository);
 });
 
-//$executable = $container->get(Router::class);
-//$executable->test();
-//die();
-
 if (isset($_SERVER['REQUEST_METHOD'])) {
     $executable = $container->get(Router::class);
 } else {
