@@ -37,18 +37,13 @@ abstract class REST
     }
 
     /**
-     * @param array $params
+     * @param array $keys
      * @param callable $function
      * @return int|null
      */
-    protected function post(array $params, callable $function): ?int
+    protected function post(array $keys, callable $function): ?int
     {
-        $userParams = [];
-        foreach ($params as $param) {
-            $userParams[$param] = $_POST[$param];
-        }
-
-        $result = $function($userParams);
+        $result = $function($this->getUserParams($keys));
         return $this->validateResult($result, 409);
     }
 
@@ -74,10 +69,8 @@ abstract class REST
      */
     private function getInputParam(string $param): string
     {
-        parse_str(file_get_contents("php://input"), $info);
-        $vars = array_shift($info) . '';
-        preg_match('#"' . $param . '"(?:\W+)(\w+)#i', $vars, $match);
-        return $match[1];
+        $input = json_decode(file_get_contents("php://input"), true);
+        return $input[0][$param];
     }
 
     /**
