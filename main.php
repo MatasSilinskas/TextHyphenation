@@ -6,13 +6,15 @@ use Loader\Autoloader;
 use TextHyphenation\Cache\ArrayCachePool;
 use TextHyphenation\Cache\CacheInterface;
 use TextHyphenation\Container\Container;
+use TextHyphenation\Database\PatternsRepository;
+use TextHyphenation\Database\TextHyphenationDatabase;
+use TextHyphenation\Database\WordsRepository;
 use TextHyphenation\DataConverters\DataConverter;
 use TextHyphenation\DataConverters\JSONConverter;
 use TextHyphenation\DataConverters\XMLConverter;
-use TextHyphenation\Executables\API;
+use TextHyphenation\Executables\Router;
 use TextHyphenation\Executables\Console;
 use TextHyphenation\Executables\Facade;
-use TextHyphenation\Database\DatabaseProvider;
 use TextHyphenation\DataProviders\PatternsProvider;
 use TextHyphenation\Executables\FacadeInterface;
 use TextHyphenation\Hyphenators\Cache;
@@ -29,8 +31,8 @@ $loader = new Autoloader;
 $loader->addNameSpaces($config['namespaces']);
 
 $container = new Container();
-$container->set(DatabaseProvider::class, function () use ($config) {
-    return new DatabaseProvider(
+$container->set(TextHyphenationDatabase::class, function () use ($config) {
+    return new TextHyphenationDatabase(
         $config['databaseConfig']['dsn'],
         $config['databaseConfig']['username'],
         $config['databaseConfig']['password']);
@@ -64,13 +66,18 @@ $container->set(HyphenatorInterface::class, function (Container $container) use 
 
 $container->set(FacadeInterface::class, function (Container $container) {
     $hyphenator = $container->get(HyphenatorInterface::class);
-    $database = $container->get(DatabaseProvider::class);
+    $wordsRepository = $container->get(WordsRepository::class);
+    $patternsRepository = $container->get(PatternsRepository::class);
     $timer = $container->get(Timer::class);
-    return new Facade($hyphenator, $timer, $database);
+    return new Facade($hyphenator, $timer, $wordsRepository, $patternsRepository);
 });
 
+//$executable = $container->get(Router::class);
+//$executable->test();
+//die();
+
 if (isset($_SERVER['REQUEST_METHOD'])) {
-    $executable = $container->get(API::class);
+    $executable = $container->get(Router::class);
 } else {
     $executable = $container->get(Console::class);
 }

@@ -11,9 +11,9 @@ return [
         'TextHyphenation\Email' => '/Email/',
         'TextHyphenation\Logger' => '/Logger/',
         'TextHyphenation\Database' => '/Database/',
-        'TextHyphenation\RestAPI' => '/RestAPI/',
         'TextHyphenation\Container' => '/Container/',
         'TextHyphenation\DataConverters' => '/DataConverters/',
+        'TextHyphenation\Controllers' => '/Controllers/',
     ],
     'databaseConfig' => [
         'dsn' => 'mysql:host=localhost',

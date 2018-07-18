@@ -1,15 +1,15 @@
 <?php
 
-namespace TextHyphenation\RestAPI;
+namespace TextHyphenation\Controllers;
 
 use TextHyphenation\DataConverters\DataConverter;
 
-abstract class REST
+abstract class RESTController
 {
     private $dataConverter;
 
     /**
-     * REST constructor.
+     * RESTController constructor.
      * @param DataConverter $dataConverter
      */
     public function __construct(DataConverter $dataConverter)

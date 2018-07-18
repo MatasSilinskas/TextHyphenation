@@ -2,7 +2,8 @@
 
 namespace TextHyphenation\Executables;
 
-use TextHyphenation\Database\DatabaseProvider;
+use TextHyphenation\Database\PatternsRepository;
+use TextHyphenation\Database\WordsRepository;
 use TextHyphenation\DataProviders\PatternsProvider;
 use TextHyphenation\Hyphenators\HyphenatorInterface;
 use TextHyphenation\Timer\Timer;
@@ -11,20 +12,23 @@ class Facade implements FacadeInterface
 {
     private $hyphenator;
     private $timer;
-    private $database;
     private $databaseUsage = false;
+    private $wordsRepository;
+    private $patternsRepository;
 
     /**
      * Facade constructor.
      * @param HyphenatorInterface $hyphenator
      * @param Timer $timer
-     * @param DatabaseProvider $database
+     * @param WordsRepository $wordsRepository
+     * @param PatternsRepository $patternsRepository
      */
-    public function __construct(HyphenatorInterface $hyphenator, Timer $timer, DatabaseProvider $database)
+    public function __construct(HyphenatorInterface $hyphenator, Timer $timer, WordsRepository $wordsRepository, PatternsRepository $patternsRepository)
     {
         $this->hyphenator = $hyphenator;
         $this->timer = $timer;
-        $this->database = $database;
+        $this->wordsRepository = $wordsRepository;
+        $this->patternsRepository = $patternsRepository;
     }
 
     /**
@@ -72,7 +76,7 @@ class Facade implements FacadeInterface
     public function importPatterns(): void
     {
         $patternsProvider = new PatternsProvider;
-        $this->database->importPatterns($patternsProvider->getData());
+        $this->patternsRepository->importPatterns($patternsProvider->getData());
     }
 
     /**
@@ -104,7 +108,7 @@ class Facade implements FacadeInterface
         $words = $this->splitSentence($sentence, $separators);
         foreach ($words as $word) {
             if ($this->databaseUsage) {
-                if (($dbWord = $this->database->searchWord($word)) !== null) {
+                if (($dbWord = $this->wordsRepository->searchWord($word)) !== null) {
                     $result['hyphenated'] .= $dbWord['hyphenated'] . array_shift($separators);
                     $result['patterns'][$word] = $dbWord['patterns'];
                     continue;
@@ -114,7 +118,7 @@ class Facade implements FacadeInterface
                 $hyphenated = $this->hyphenator->hyphenate($word, $patterns);
                 $result['hyphenated'] .= $hyphenated . array_shift($separators);
                 $result['patterns'][$word] = $patterns;
-                $this->database->insertWord($word, $hyphenated, $patterns);
+                $this->wordsRepository->insertWord($word, $hyphenated, $patterns);
                 continue;
             }
 
