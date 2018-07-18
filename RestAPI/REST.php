@@ -2,6 +2,8 @@
 
 namespace TextHyphenation\RestAPI;
 
+use SimpleXMLElement;
+
 abstract class REST
 {
 
@@ -64,16 +66,6 @@ abstract class REST
     }
 
     /**
-     * @param string $param
-     * @return string
-     */
-    private function getInputParam(string $param): string
-    {
-        $input = json_decode(file_get_contents("php://input"), true);
-        return $input[0][$param];
-    }
-
-    /**
      * @param int|null $result
      * @param int $codeOnZeroResults
      * @return int|null
@@ -95,9 +87,17 @@ abstract class REST
      */
     private function getUserParams(array $keys): array
     {
+        $input = file_get_contents("php://input");
+        $encoded = json_decode($input, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            $xml = simplexml_load_string($input, 'SimpleXMLElement', LIBXML_NOCDATA);
+            $json = json_encode($xml);
+            $encoded = json_decode($json,TRUE);
+        }
+        
         $userParams = [];
         foreach ($keys as $key) {
-            $userParams[$key] = $this->getInputParam($key);
+            $userParams[$key] = $encoded[$key];
         }
 
         return $userParams;
