@@ -47,7 +47,7 @@ class Autoloader
     public function addNameSpaces(array $namespaces) : void
     {
         foreach ($namespaces as $key => $value) {
-            $this->addNameSpace($key, __DIR__ . $value);
+            $this->addNameSpace($key, __DIR__ . '/src' . $value);
         }
     }
 }

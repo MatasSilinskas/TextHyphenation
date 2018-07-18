@@ -4,7 +4,7 @@ namespace TextHyphenation\DataProviders;
 
 class WordsProvider extends FileProvider
 {
-    const FILENAME = './Data/words.txt';
+    const FILENAME = './src/Data/words.txt';
 
     public function __construct()
     {

@@ -4,7 +4,7 @@ namespace TextHyphenation\DataProviders;
 
 class PatternsProvider extends FileProvider
 {
-    const FILENAME = './Data/text-hyphenation-patterns.txt';
+    const FILENAME = './src/Data/text-hyphenation-patterns.txt';
     /**
      * PatternsProvider constructor.
      */

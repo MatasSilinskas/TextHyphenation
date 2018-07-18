@@ -11,7 +11,7 @@ return [
         'TextHyphenation\Email' => '/Email/',
         'TextHyphenation\Logger' => '/Logger/',
         'TextHyphenation\Database' => '/Database/',
-        'TextHyphenation\Container' => '/Container/',
+        'TextHyphenation\Container' => '/Container',
         'TextHyphenation\DataConverters' => '/DataConverters/',
         'TextHyphenation\Controllers' => '/Controllers/',
     ],

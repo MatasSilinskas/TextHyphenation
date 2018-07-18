@@ -1,4 +1,10 @@
 {
+    "name": "texthyphenation/texthyphenation",
+    "autoload": {
+        "psr-4" : {
+            "TextHyphenation\\" : "src/"
+        }
+    },
     "require": {
     },
     "require-dev": {
