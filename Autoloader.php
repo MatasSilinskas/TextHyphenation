@@ -22,15 +22,19 @@ class Autoloader
     {
         $nameSpaces = explode("\\", $class);
         $className = array_pop($nameSpaces);
-        $fullNameSpace = implode('\\', $nameSpaces);
-        if (isset($this->directories[$fullNameSpace])) {
-            foreach ($this->directories[$fullNameSpace] as $directory) {
-                $file = $directory . DIRECTORY_SEPARATOR . $className . '.php';
-                if (file_exists($file)) {
-                    include $file;
-                    return $file;
+        $additionalNamespace = '';
+        while (!empty($nameSpaces)) {
+            $nameSpace = implode('\\', $nameSpaces) . '\\';
+            if (isset($this->directories[$nameSpace])) {
+                foreach ($this->directories[$nameSpace] as $directory) {
+                    $file = $directory . DIRECTORY_SEPARATOR . $additionalNamespace . $className . '.php';
+                    if (file_exists($file)) {
+                        include $file;
+                        return $file;
+                    }
                 }
             }
+            $additionalNamespace .= array_pop($nameSpaces) . '\\';
         }
         return false;
     }
@@ -39,15 +43,15 @@ class Autoloader
      * @param string $prefix
      * @param string $directory
      */
-    public function addNameSpace(string $prefix, string $directory) : void
+    public function addNameSpace(string $prefix, string $directory): void
     {
         $this->directories[$prefix][] = str_replace('/', '\\', $directory);
     }
 
-    public function addNameSpaces(array $namespaces) : void
+    public function addNameSpaces(array $namespaces): void
     {
         foreach ($namespaces as $key => $value) {
-            $this->addNameSpace($key, __DIR__ . '/src' . $value);
+            $this->addNameSpace($key, __DIR__ . $value);
         }
     }
 }
