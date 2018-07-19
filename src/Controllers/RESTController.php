@@ -8,6 +8,10 @@ abstract class RESTController
 {
     private $dataConverter;
 
+    public const NOT_FOUND = 404;
+    public const CONFLICT = 409;
+    public const INTERNAL_SERVER_ERROR = 500;
+
     /**
      * RESTController constructor.
      * @param DataConverter $dataConverter
@@ -16,7 +20,6 @@ abstract class RESTController
     {
         $this->dataConverter = $dataConverter;
     }
-
 
     /**
      * @param array $keys
@@ -33,7 +36,7 @@ abstract class RESTController
         $result = $function($userParams);
 
         if (empty($result)) {
-            http_response_code(404);
+            http_response_code(self::NOT_FOUND);
         }
 
         return $result;
@@ -57,7 +60,7 @@ abstract class RESTController
     protected function post(array $keys, callable $function): ?int
     {
         $result = $function($this->getUserParams($keys));
-        return $this->validateResult($result, 409);
+        return $this->validateResult($result, self::CONFLICT);
     }
 
     /**
@@ -81,10 +84,10 @@ abstract class RESTController
      * @param int $codeOnZeroResults
      * @return int|null
      */
-    private function validateResult(?int $result, int $codeOnZeroResults = 404): ?int
+    private function validateResult(?int $result, int $codeOnZeroResults = self::NOT_FOUND): ?int
     {
         if ($result === null) {
-            http_response_code(500);
+            http_response_code(self::INTERNAL_SERVER_ERROR);
         } elseif ($result === 0) {
             http_response_code($codeOnZeroResults);
         }
