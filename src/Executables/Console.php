@@ -3,7 +3,7 @@
 namespace TextHyphenation\Executables;
 
 use SplFileObject;
-use TextHyphenation\DataProviders\WordsProvider;
+use TextHyphenation\DataProviders\ProviderFactory;
 
 class Console implements ExecutableInterface
 {
@@ -78,7 +78,9 @@ class Console implements ExecutableInterface
     private function takeInputFromFile(): void
     {
         echo "Working on it...\n";
-        $wordsProvider = new WordsProvider();
+
+        $providerFactory = new ProviderFactory();
+        $wordsProvider = $providerFactory->createProvider('words');
         $words = $wordsProvider->getData();
 
         $result = $this->facade->hyphenateMany($words);

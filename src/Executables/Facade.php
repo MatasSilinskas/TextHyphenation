@@ -5,6 +5,7 @@ namespace TextHyphenation\Executables;
 use TextHyphenation\Database\PatternsRepository;
 use TextHyphenation\Database\WordsRepository;
 use TextHyphenation\DataProviders\PatternsProvider;
+use TextHyphenation\DataProviders\ProviderFactory;
 use TextHyphenation\Hyphenators\HyphenatorInterface;
 use TextHyphenation\Timer\Timer;
 
@@ -79,7 +80,8 @@ class Facade implements FacadeInterface
 
     public function importPatterns(): void
     {
-        $patternsProvider = new PatternsProvider;
+        $factory = new ProviderFactory();
+        $patternsProvider = $factory->createProvider('patterns');
         $this->patternsRepository->importPatterns($patternsProvider->getData());
     }
 

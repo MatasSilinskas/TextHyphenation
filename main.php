@@ -12,10 +12,10 @@ use TextHyphenation\Database\WordsRepository;
 use TextHyphenation\DataConverters\DataConverter;
 use TextHyphenation\DataConverters\JSONConverter;
 use TextHyphenation\DataConverters\XMLConverter;
+use TextHyphenation\DataProviders\ProviderFactory;
 use TextHyphenation\Executables\Router;
 use TextHyphenation\Executables\Console;
 use TextHyphenation\Executables\Facade;
-use TextHyphenation\DataProviders\PatternsProvider;
 use TextHyphenation\Executables\FacadeInterface;
 use TextHyphenation\Hyphenators\Cache;
 use TextHyphenation\Hyphenators\HyphenatorFactory;
@@ -47,7 +47,9 @@ $container->set(CacheInterface::class, function () use ($config) {
 });
 
 $container->set(HyphenatorFactory::class, function (Container $container) {
-    $patternsProvider = $container->get(PatternsProvider::class);
+    /* @var ProviderFactory $providerFactory */
+    $providerFactory = $container->get(ProviderFactory::class);
+    $patternsProvider = $providerFactory->createProvider('patterns');
     return new HyphenatorFactory($patternsProvider->getData());
 });
 

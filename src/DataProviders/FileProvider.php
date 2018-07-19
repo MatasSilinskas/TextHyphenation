@@ -4,7 +4,7 @@ namespace TextHyphenation\DataProviders;
 
 use SplFileObject;
 
-abstract class FileProvider
+class FileProvider implements DataProvider
 {
     protected $file;
 
