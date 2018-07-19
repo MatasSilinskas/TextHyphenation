@@ -2,7 +2,6 @@
 
 namespace TextHyphenation\DataProviders;
 
-
 interface DataProvider
 {
     /**
