@@ -6,6 +6,9 @@ class HyphenatorFactory
 {
     private $patterns;
 
+    private const NORMAL_HYPHERNATOR = 'normal';
+    private const REGEX_HYPHERNATOR = 'regex';
+    private const PROXY_HYPHERNATOR = 'proxy';
     /**
      * HyphenatorFactory constructor.
      * @param $patterns
@@ -20,13 +23,13 @@ class HyphenatorFactory
      * @return HyphenatorInterface
      * @throws NotImplementedException
      */
-    public function createHyphenator(string $option = 'normal'): HyphenatorInterface
+    public function createHyphenator(string $option = self::NORMAL_HYPHERNATOR): HyphenatorInterface
     {
-        if ($option === 'regex') {
+        if ($option === self::REGEX_HYPHERNATOR) {
             return new RegexHyphenator($this->patterns);
-        } elseif ($option === 'proxy') {
+        } elseif ($option === self::PROXY_HYPHERNATOR) {
             return new ProxyHyphenator($this->patterns);
-        } elseif ($option === 'normal') {
+        } elseif ($option === self::NORMAL_HYPHERNATOR) {
             return new Hyphenator($this->patterns);
         }
 
