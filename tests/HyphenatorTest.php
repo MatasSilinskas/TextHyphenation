@@ -1,5 +1,7 @@
 <?php
 
+namespace TextHyphenation\Tests;
+
 use PHPUnit\Framework\TestCase;
 use TextHyphenation\DataProviders\ProviderFactory;
 use TextHyphenation\Hyphenators\Hyphenator;
@@ -9,11 +11,11 @@ class HyphenatorTest extends TestCase
     /**
      * @param string $word
      * @param string $expected
-     * @throws Exception
-     * 
+     * @throws \Exception
+     *
      * @dataProvider hyphenationProvider
      */
-    public function testHyphenate(string $word, string $expected)
+    public function testHyphenate(string $word, string $expected): void
     {
         $factory = new ProviderFactory();
         $patternsProvider = $factory->createProvider('patterns');
@@ -21,7 +23,7 @@ class HyphenatorTest extends TestCase
         $this->assertEquals($expected, $hyphenator->hyphenate($word));
     }
 
-    public function hyphenationProvider()
+    public function hyphenationProvider(): array
     {
         return [
             ['mistranslate', 'mis-trans-late'],

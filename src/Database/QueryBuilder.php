@@ -107,7 +107,7 @@ class QueryBuilder
      */
     public function getQuery(): string
     {
-        return $this->query;
+        return rtrim($this->query);
     }
 
     /**
