@@ -91,7 +91,8 @@ class Hyphenator implements HyphenatorInterface
     protected function putHyphenPosition(array &$data, string $word, string $pattern): void
     {
         $needle = $this->normalizePattern($pattern);
-        preg_match('#\d+#', $pattern, $numbers);
+        preg_match_all('#\d+#', $pattern, $numbers);
+        $numbers = array_shift($numbers);
 
         if (($dotPos = strpos($pattern, '.')) !== false) {
             if ($dotPos === 0 && substr($word, 0, strlen($needle)) === $needle) {
@@ -157,12 +158,14 @@ class Hyphenator implements HyphenatorInterface
         string $needle
     ): void {
         $lastPos = 0;
+        $unchangedPattern = $pattern;
         while (($lastPos = strpos($word, $needle, $lastPos)) !== false) {
             foreach ($numbers as $number) {
                 $numPos = strpos($pattern, $number);
                 if (!isset($data[$lastPos + $numPos]) || $data[$lastPos + $numPos][0] < $number) {
-                    $data[$lastPos + $numPos] = [$number, $pattern];
+                    $data[$lastPos + $numPos] = [$number, $unchangedPattern];
                 }
+                $pattern = substr_replace($pattern, '', $numPos, strlen($number));
             }
             $lastPos += strlen($needle);
         }
@@ -183,7 +186,9 @@ class Hyphenator implements HyphenatorInterface
         foreach ($hyphenPositions as $key => $value) {
             if ($value[0] % 2 !== 0) {
                 $word = substr_replace($word, '-', $key, 0);
-                $usedPatterns[] = $value[1];
+                if (!in_array($value[1], $usedPatterns)) {
+                    $usedPatterns[] = $value[1];
+                }
             }
         }
 
