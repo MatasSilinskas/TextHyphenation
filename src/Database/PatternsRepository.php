@@ -88,4 +88,14 @@ class PatternsRepository extends Repository
             $this->database->execute($this->queryBuilder->getParams());
         }
     }
+
+    public function deletePattern(string $pattern)
+    {
+        $this->queryBuilder
+            ->reset()
+            ->delete()->from(['patterns'])
+            ->where('pattern', [':pattern' => $pattern]);
+
+        return $this->checkRows();
+    }
 }

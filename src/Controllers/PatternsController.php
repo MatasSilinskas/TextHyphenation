@@ -47,4 +47,12 @@ class PatternsController extends RESTController
             return $this->repository->updatePattern($params);
         });
     }
+
+    public function deleteAction(): void
+    {
+        $params = ['pattern'];
+        $this->delete($params, function (array $params) {
+            return $this->repository->deletePattern($params['pattern']);
+        });
+    }
 }
