@@ -8,14 +8,16 @@ use TextHyphenation\Database\QueryBuilder;
 class QueryBuilderTest extends TestCase
 {
     /**
+     * @return QueryBuilder
      * @throws \Exception
-     *
      */
-    public function testSelect(): void
+    public function testSelect(): QueryBuilder
     {
         $queryBuilder = new QueryBuilder();
         $queryBuilder->select(['column1', 'column2'])->from(['table1']);
         $this->assertEquals('SELECT column1, column2 FROM table1', $queryBuilder->getQuery());
+
+        return $queryBuilder;
     }
 
     /**
@@ -29,15 +31,14 @@ class QueryBuilderTest extends TestCase
     }
 
     /**
+     * @param QueryBuilder $queryBuilder
      * @throws \Exception
+     *
+     * @depends testSelect
      */
-    public function testWhere(): void
+    public function testWhere(QueryBuilder $queryBuilder): void
     {
-        $queryBuilder = new QueryBuilder();
-        $queryBuilder
-            ->select(['column1', 'column2'])
-            ->from(['table1'])
-            ->where('column1', [':column1' => 'value1']);
+        $queryBuilder->where('column1', [':column1' => 'value1']);
 
         $this->assertEquals(
             'SELECT column1, column2 FROM table1 WHERE column1 = :column1',
