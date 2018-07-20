@@ -8,16 +8,25 @@ use TextHyphenation\Database\QueryBuilder;
 class QueryBuilderTest extends TestCase
 {
     /**
+     * @var QueryBuilder $queryBuilder
+     */
+    private $queryBuilder;
+
+    protected function setUp(): void
+    {
+        $this->queryBuilder = new QueryBuilder();
+    }
+
+    /**
      * @return QueryBuilder
      * @throws \Exception
      */
     public function testSelect(): QueryBuilder
     {
-        $queryBuilder = new QueryBuilder();
-        $queryBuilder->select(['column1', 'column2'])->from(['table1']);
-        $this->assertEquals('SELECT column1, column2 FROM table1', $queryBuilder->getQuery());
+        $this->queryBuilder->select(['column1', 'column2'])->from(['table1']);
+        $this->assertEquals('SELECT column1, column2 FROM table1', $this->queryBuilder->getQuery());
 
-        return $queryBuilder;
+        return $this->queryBuilder;
     }
 
     /**
@@ -25,9 +34,8 @@ class QueryBuilderTest extends TestCase
      */
     public function testDelete(): void
     {
-        $queryBuilder = new QueryBuilder();
-        $queryBuilder->delete()->from(['table1']);
-        $this->assertEquals('DELETE FROM table1', $queryBuilder->getQuery());
+        $this->queryBuilder->delete()->from(['table1']);
+        $this->assertEquals('DELETE FROM table1', $this->queryBuilder->getQuery());
     }
 
     /**
@@ -69,14 +77,13 @@ class QueryBuilderTest extends TestCase
      */
     public function testInsert(string $table, array $columns, array $params): void
     {
-        $queryBuilder = new QueryBuilder();
-        $queryBuilder->insert($table, $columns, $params);
+        $this->queryBuilder->insert($table, $columns, $params);
 
         $columns = implode(', ', $columns);
         $values = implode(', ', array_keys($params));
         $this->assertEquals(
             "INSERT INTO $table($columns) VALUES($values)",
-            $queryBuilder->getQuery()
+            $this->queryBuilder->getQuery()
         );
     }
 
@@ -90,14 +97,13 @@ class QueryBuilderTest extends TestCase
      */
     public function testUpdate(string $table, array $columns, array $params): void
     {
-        $queryBuilder = new QueryBuilder();
-        $queryBuilder->update($table, $columns, $params);
+        $this->queryBuilder->update($table, $columns, $params);
 
         $colsValues = implode(', ', array_map(function (string $column, string $value) {
             return $column . ' = ' . $value;
         }, $columns, array_keys($params)));
 
-        $this->assertEquals("UPDATE $table SET $colsValues", $queryBuilder->getQuery());
+        $this->assertEquals("UPDATE $table SET $colsValues", $this->queryBuilder->getQuery());
     }
 
     /**
