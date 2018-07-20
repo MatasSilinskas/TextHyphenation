@@ -20,6 +20,7 @@ class CacheDecoratorTest extends TestCase
         $hyphenator
             ->expects($this->once())
             ->method('hyphenate')
+            ->with('word')
             ->willReturn('nonCachedValue');
 
         $cachePool = $this->createMock(ArrayCachePool::class);
@@ -38,7 +39,7 @@ class CacheDecoratorTest extends TestCase
 
         $cache = new Cache($hyphenator, $cachePool);
 
-        $this->assertEquals('nonCachedValue', $cache->hyphenate(''));
-        $this->assertEquals('cachedValue', $cache->hyphenate(''));
+        $this->assertEquals('nonCachedValue', $cache->hyphenate('word'));
+        $this->assertEquals('cachedValue', $cache->hyphenate('word'));
     }
 }
