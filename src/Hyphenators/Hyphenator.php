@@ -6,7 +6,6 @@ class Hyphenator implements HyphenatorInterface
 {
     private $patterns = [];
     private const SEARCH_FOR = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, '.'];
-    private static $numberOfInstances = 0;
 
     /**
      * Hyphenator constructor.
@@ -15,7 +14,6 @@ class Hyphenator implements HyphenatorInterface
     public function __construct(array $patterns)
     {
         $this->constructPatterns($patterns);
-        self::$numberOfInstances++;
     }
 
     /**
@@ -31,22 +29,6 @@ class Hyphenator implements HyphenatorInterface
             $this->putHyphenPosition($hyphenPositions, $word, $pattern);
         }
         return $this->addHyphens($hyphenPositions, $word, $usedPatterns);
-    }
-
-    /**
-     * @return int
-     */
-    public static function getNumberOfInstances(): int
-    {
-        return self::$numberOfInstances;
-    }
-
-    /**
-     * @param int $numberOfInstances
-     */
-    public static function setNumberOfInstances(int $numberOfInstances): void
-    {
-        self::$numberOfInstances = $numberOfInstances;
     }
 
     /**

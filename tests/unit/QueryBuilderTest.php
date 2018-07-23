@@ -107,6 +107,19 @@ class QueryBuilderTest extends TestCase
     }
 
     /**
+     * @throws \Exception
+     */
+    public function testReset(): void
+    {
+        $this->queryBuilder->setQuery('query');
+        $this->queryBuilder->addParamValue('key', 'value');
+        $this->queryBuilder->reset();
+
+        $this->assertSame('', $this->queryBuilder->getQuery());
+        $this->assertSame([], $this->queryBuilder->getParams());
+    }
+
+    /**
      * @return array
      */
     public function insertAndUpdateProvider(): array

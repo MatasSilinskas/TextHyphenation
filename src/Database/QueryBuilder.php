@@ -155,8 +155,6 @@ class QueryBuilder
      */
     public function addParamValue(string $key, $value)
     {
-        if (isset($this->params[$key])) {
-            $this->params[$key] = $value;
-        }
+        $this->params[$key] = $value;
     }
 }
