@@ -4,10 +4,12 @@ namespace TextHyphenation\Database;
 
 class TextHyphenationDatabase extends Database
 {
-    public function __construct(string $dsn, string $username, string $password)
+    public function __construct(string $dsn, string $username, string $password, string $dbName = null)
     {
         parent::__construct($dsn, $username, $password);
-        $this->createDatabase('hyphenation');
+        if ($dbName !== null) {
+            $this->createDatabase($dbName);
+        }
 //        $this->dropTables();
         $this->createTables();
     }

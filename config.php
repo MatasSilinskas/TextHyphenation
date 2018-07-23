@@ -6,9 +6,10 @@ return [
         'TextHyphenation\\' => '/src/',
     ],
     'databaseConfig' => [
-        'dsn' => 'mysql:host=localhost',
+        'dsn' => 'mysql:host=localhost;dbname=hyphenation',
         'username' => 'root',
         'password' => 'password',
+        'dbname' => 'hyphenation',
     ],
     'hyphenatorType' => 'normal'
 ];

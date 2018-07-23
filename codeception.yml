@@ -1,0 +1,31 @@
+# suite config
+suites:
+    api:
+        actor: ApiTester
+        path: .
+        modules:
+            enabled:
+                - REST:
+                    url: http://127.0.0.1/TextHyphenation
+                    depends: PhpBrowser
+                    part: JSON
+                - Db:
+                    dsn: 'mysql:host=localhost;dbname=testhyphenation'
+                    user: 'root'
+                    password: 'password'
+                    populate: true
+                    cleanup: true
+                    reconnect: true
+                - \Helper\Api
+
+paths:
+    tests: tests
+    output: tests/functional/_output
+    data: tests/functional/_data
+    support: tests/functional/_support
+
+settings:
+    shuffle: false
+    lint: true
+
+modules:
