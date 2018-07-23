@@ -7,17 +7,17 @@ class Api extends \Codeception\Module
 
     public function _beforeSuite($settings = [])
     {
-       $dbSettings = $settings['modules']['enabled'][1]['Db'];
-       $config = include 'config.php';
-       $this->projectConfig = $config;
+        $dbSettings = $settings['modules']['enabled'][1]['Db'];
+        $config = include 'config.php';
+        $this->projectConfig = $config;
 
-       $config['databaseConfig']['username'] = $dbSettings['user'];
-       $config['databaseConfig']['password'] = $dbSettings['password'];
-       $config['databaseConfig']['dsn'] = $dbSettings['dsn'];
-       $config['databaseConfig']['dbname'] = null;
+        $config['databaseConfig']['username'] = $dbSettings['user'];
+        $config['databaseConfig']['password'] = $dbSettings['password'];
+        $config['databaseConfig']['dsn'] = $dbSettings['dsn'];
+        $config['databaseConfig']['dbname'] = null;
 
-       $this->rewriteConfig($config);
-       parent::_beforeSuite($settings);
+        $this->rewriteConfig($config);
+        parent::_beforeSuite($settings);
     }
 
     public function _afterSuite()

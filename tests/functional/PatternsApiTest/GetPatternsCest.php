@@ -1,5 +1,8 @@
 <?php
 
+namespace TextHyphenation\Tests;
+
+use ApiTester;
 
 class GetPatternsCest
 {
