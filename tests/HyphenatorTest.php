@@ -28,8 +28,8 @@ class HyphenatorTest extends TestCase
     {
         $hyphenator = new Hyphenator($this->patterns);
         $actualPatterns = [];
-        $this->assertEquals($expected, $hyphenator->hyphenate($word, $actualPatterns));
-        $this->assertEquals($expectedPatterns, $actualPatterns);
+        $this->assertSame($expected, $hyphenator->hyphenate($word, $actualPatterns));
+        $this->assertSame($expectedPatterns, $actualPatterns);
     }
 
     /**

@@ -21,7 +21,7 @@ class PatternsControllerTest extends TestCase
         $request = $client->get($url);
 
         $response = $request->send();
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
     }
 
     public function testPostAction(): void
@@ -34,7 +34,7 @@ class PatternsControllerTest extends TestCase
         $request = $client->post('/TextHyphenation/patterns', null, json_encode($data));
 
         $response = $request->send();
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
 
         $this->expectException(ClientErrorResponseException::class);
         $request->send();
@@ -51,7 +51,7 @@ class PatternsControllerTest extends TestCase
         $request = $client->put('/TextHyphenation/patterns', null, json_encode($data));
         $response = $request->send();
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
     }
 
     public function testDeletePattern(): void
@@ -64,7 +64,7 @@ class PatternsControllerTest extends TestCase
         $request = $client->delete('/TextHyphenation/patterns', null, json_encode($data));
         $response = $request->send();
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
     }
 
     /**

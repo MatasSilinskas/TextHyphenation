@@ -24,7 +24,7 @@ class QueryBuilderTest extends TestCase
     public function testSelect(): QueryBuilder
     {
         $this->queryBuilder->select(['column1', 'column2'])->from(['table1']);
-        $this->assertEquals('SELECT column1, column2 FROM table1', $this->queryBuilder->getQuery());
+        $this->assertSame('SELECT column1, column2 FROM table1', $this->queryBuilder->getQuery());
 
         return $this->queryBuilder;
     }
@@ -35,7 +35,7 @@ class QueryBuilderTest extends TestCase
     public function testDelete(): void
     {
         $this->queryBuilder->delete()->from(['table1']);
-        $this->assertEquals('DELETE FROM table1', $this->queryBuilder->getQuery());
+        $this->assertSame('DELETE FROM table1', $this->queryBuilder->getQuery());
     }
 
     /**
@@ -48,20 +48,20 @@ class QueryBuilderTest extends TestCase
     {
         $queryBuilder->where('column1', [':column1' => 'value1']);
 
-        $this->assertEquals(
+        $this->assertSame(
             'SELECT column1, column2 FROM table1 WHERE column1 = :column1',
             $queryBuilder->getQuery()
         );
 
         $queryBuilder->andWhere('column2', [':column2' => 'value2']);
 
-        $this->assertEquals(
+        $this->assertSame(
             'SELECT column1, column2 FROM table1 WHERE column1 = :column1 AND column2 = :column2',
             $queryBuilder->getQuery()
         );
 
         $queryBuilder->andWhere('column3', 'value3');
-        $this->assertEquals(
+        $this->assertSame(
             'SELECT column1, column2 FROM table1 WHERE column1 = :column1 AND column2 = :column2 AND column3 = value3',
             $queryBuilder->getQuery()
         );
@@ -81,7 +81,7 @@ class QueryBuilderTest extends TestCase
 
         $columns = implode(', ', $columns);
         $values = implode(', ', array_keys($params));
-        $this->assertEquals(
+        $this->assertSame(
             "INSERT INTO $table($columns) VALUES($values)",
             $this->queryBuilder->getQuery()
         );
@@ -103,7 +103,7 @@ class QueryBuilderTest extends TestCase
             return $column . ' = ' . $value;
         }, $columns, array_keys($params)));
 
-        $this->assertEquals("UPDATE $table SET $colsValues", $this->queryBuilder->getQuery());
+        $this->assertSame("UPDATE $table SET $colsValues", $this->queryBuilder->getQuery());
     }
 
     /**

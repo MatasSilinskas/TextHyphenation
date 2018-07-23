@@ -39,7 +39,7 @@ class CacheDecoratorTest extends TestCase
 
         $cache = new Cache($hyphenator, $cachePool);
 
-        $this->assertEquals('nonCachedValue', $cache->hyphenate('word'));
-        $this->assertEquals('cachedValue', $cache->hyphenate('word'));
+        $this->assertSame('nonCachedValue', $cache->hyphenate('word'));
+        $this->assertSame('cachedValue', $cache->hyphenate('word'));
     }
 }
