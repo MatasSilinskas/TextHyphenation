@@ -40,7 +40,7 @@ class PatternsController extends RESTController
         });
     }
 
-    public function updateAction(): void
+    public function putAction(): void
     {
         $params = ['oldPattern', 'newPattern'];
         $this->put($params, function (array $params) {
