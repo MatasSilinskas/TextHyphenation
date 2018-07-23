@@ -3,6 +3,7 @@
 namespace TextHyphenation\Tests;
 
 
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use TextHyphenation\Cache\ArrayCachePool;
 use TextHyphenation\Hyphenators\Cache;
@@ -10,36 +11,49 @@ use TextHyphenation\Hyphenators\Hyphenator;
 
 class CacheDecoratorTest extends TestCase
 {
+    /* @var Hyphenator|MockObject */
+    private $hyphenator;
+    /* @var ArrayCachePool|MockObject */
+    private $cache;
+    /* @var Cache */
+    private $cachingHyphenator;
+
     /**
      * @throws \ReflectionException
-     * @throws \TextHyphenation\Cache\InvalidArgumentException
+     */
+    protected function setUp(): void
+    {
+        $this->hyphenator = $this->createMock(Hyphenator::class);
+        $this->cache = $this->createMock(ArrayCachePool::class);
+
+        $this->cachingHyphenator = new Cache($this->hyphenator, $this->cache);
+    }
+
+    /**
+     * @throws \Exception
      */
     public function testHyphenate(): void
     {
-        $hyphenator = $this->createMock(Hyphenator::class);
-        $hyphenator
+        $this->hyphenator
             ->expects($this->once())
             ->method('hyphenate')
             ->with('word')
             ->willReturn('nonCachedValue');
 
-        $cachePool = $this->createMock(ArrayCachePool::class);
-        $cachePool
+        $this->cache
             ->expects($this->once())
             ->method('get')
             ->willReturn('cachedValue');
 
-        $cachePool
+        $this->cache
             ->expects($this->once())
             ->method('set');
 
-        $cachePool
+        $this->cache
             ->method('has')
             ->willReturnOnConsecutiveCalls(false, true);
 
-        $cache = new Cache($hyphenator, $cachePool);
-
-        $this->assertSame('nonCachedValue', $cache->hyphenate('word'));
-        $this->assertSame('cachedValue', $cache->hyphenate('word'));
+        $this->assertSame('nonCachedValue', $this->cachingHyphenator->hyphenate('word'));
+        $this->assertSame('cachedValue', $this->cachingHyphenator->hyphenate('word'));
     }
 }

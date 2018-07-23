@@ -7,13 +7,16 @@ use TextHyphenation\Hyphenators\Hyphenator;
 
 class HyphenatorTest extends TestCase
 {
-    private $patterns = [];
+    /* @var Hyphenator */
+    private $hyphenator;
     private $extraPatterns = ['2pppppp2', '1xdxd2'];
 
-    public function setUp()/* The :void return type declaration that should be here would cause a BC issue */
+    public function setUp(): void
     {
-        $this->patterns = array_unique(array_reduce(array_column($this->hyphenationProvider(), 2), 'array_merge', []));
-        $this->patterns = array_merge($this->patterns, $this->extraPatterns);
+        $patterns = array_unique(array_reduce(array_column($this->hyphenationProvider(), 2), 'array_merge', []));
+        $patterns = array_merge($patterns, $this->extraPatterns);
+
+        $this->hyphenator = new Hyphenator($patterns);
     }
 
     /**
@@ -26,9 +29,8 @@ class HyphenatorTest extends TestCase
      */
     public function testHyphenation(string $word, string $expected, array $expectedPatterns): void
     {
-        $hyphenator = new Hyphenator($this->patterns);
         $actualPatterns = [];
-        $this->assertSame($expected, $hyphenator->hyphenate($word, $actualPatterns));
+        $this->assertSame($expected, $this->hyphenator->hyphenate($word, $actualPatterns));
         $this->assertSame($expectedPatterns, $actualPatterns);
     }
 
