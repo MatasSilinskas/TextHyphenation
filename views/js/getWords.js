@@ -6,7 +6,7 @@ request.onreadystatechange = function() {
     if(request.readyState === 4) {
         if (this.readyState === 4 && this.status === 200) {
             myObj = JSON.parse(this.responseText);
-            let txt = "<table>" +
+            let txt = '<table class="table table-hover table-bordered">' +
                 "<tr>" +
                 "<th>Id</th>" +
                 "<th>Word</th>" +
