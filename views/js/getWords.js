@@ -1,4 +1,4 @@
-let bio = document.getElementById('words');
+let words = document.getElementById('words');
 let request = new XMLHttpRequest();
 
 request.onreadystatechange = function() {
@@ -21,7 +21,7 @@ request.onreadystatechange = function() {
                     `</tr>`;
             }
             txt += "</table>";
-            bio.innerHTML = txt;
+            words.innerHTML = txt;
         }
     }
 };

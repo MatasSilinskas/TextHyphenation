@@ -5,6 +5,7 @@ DirectoryIndex rest.php
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule ^api/(?:words|patterns)/([0-9]+)/?$ main.php?id=$1 [L]
   RewriteRule ^api/(words|patterns)/?$ main.php [L]
+  RewriteRule ^(word|pattern)s/([0-9]+)/?$ views/html/$1.html?id=$2 [L]
   RewriteRule ^(words|patterns)/?$ views/html/$1.html [L]
   RewriteRule ^/?$ views/html/main.html [L]
 </IfModule>

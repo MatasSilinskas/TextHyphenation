@@ -1,4 +1,4 @@
-let bio = document.getElementById('patterns');
+let patterns = document.getElementById('patterns');
 let request = new XMLHttpRequest();
 
 request.onreadystatechange = function() {
@@ -23,7 +23,7 @@ request.onreadystatechange = function() {
                     `</tr>`;
             }
             txt += "</table>";
-            bio.innerHTML = txt;
+            patterns.innerHTML = txt;
         }
     }
 };
