@@ -6,7 +6,7 @@ suites:
         modules:
             enabled:
                 - REST:
-                    url: http://127.0.0.1/TextHyphenation
+                    url: http://127.0.0.1/TextHyphenation/api
                     depends: PhpBrowser
                     part: JSON
                 - Db:
@@ -27,5 +27,3 @@ paths:
 settings:
     shuffle: false
     lint: true
-
-modules:

@@ -21,14 +21,15 @@ class Router implements ExecutableInterface
         $uri = $_SERVER['REQUEST_URI'];
         $method = $_SERVER['REQUEST_METHOD'];
 
-        $className = ucfirst(explode('/', $uri)[2]);
-        $controller = 'TextHyphenation\\Controllers\\' . $className . 'Controller';
-        $repository = 'TextHyphenation\\Database\\' . $className . 'Repository';
-        $action = strtolower($method) . 'Action';
+        if (explode('/', $uri)[2] === 'api') {
+            $className = ucfirst(explode('/', $uri)[3]);
+            $controller = 'TextHyphenation\\Controllers\\' . $className . 'Controller';
+            $repository = 'TextHyphenation\\Database\\' . $className . 'Repository';
+            $action = strtolower($method) . 'Action';
 
-        $repository = new $repository($this->database);
-        $controller = new $controller($repository, $this->converter);
-        
-        echo $controller->$action();
+            $repository = new $repository($this->database);
+            $controller = new $controller($repository, $this->converter);
+            echo $controller->$action();
+        }
     }
 }
