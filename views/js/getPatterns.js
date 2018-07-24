@@ -10,13 +10,16 @@ request.onreadystatechange = function() {
                 "<th>Id</th>" +
                 "<th>Pattern</th>" +
                 "<th>Delete</th>" +
+                "<th>Update</th>" +
                 "</tr>";
             for (let row in myObj) {
                 txt +=
                     `<tr><td>${myObj[row].id}</td>` +
-                    `<td>${myObj[row].pattern}</td>` +
+                    `<td id='pattern${myObj[row].id}' contenteditable="true">${myObj[row].pattern}</td>` +
                     `<td><button type="button" class="btn btn-danger" value="${myObj[row].pattern}" ` +
                     `onclick="deletePattern(this.value)">` + `Delete</button></td>` +
+                    `<td><button type="button" class="btn btn-info" value="${myObj[row].pattern}" ` +
+                    `onclick="updatePattern(this.value, document.getElementById('pattern${myObj[row].id}').innerText)">` + `Update</button></td>` +
                     `</tr>`;
             }
             txt += "</table>";
@@ -41,5 +44,22 @@ function deletePattern(pattern){
     deleteRequest.open('Delete', 'api/patterns');
     let data = {pattern:pattern};
     deleteRequest.send(JSON.stringify(data));
+}
+
+function updatePattern(oldPattern, newPattern) {
+    let updateRequest = new XMLHttpRequest();
+    updateRequest.onload = function() {
+        if (updateRequest.status === 200) {
+            location.reload();
+            alert('Update was successful!');
+        } else {
+            alert('Something went wrong');
+        }
+    };
+
+    updateRequest.open('Put', 'api/patterns');
+    let data = {oldPattern:oldPattern, newPattern:newPattern};
+    alert(JSON.stringify(data));
+    updateRequest.send(JSON.stringify(data));
 }
 
