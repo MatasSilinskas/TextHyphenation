@@ -4,12 +4,14 @@ let request = new XMLHttpRequest();
 request.onreadystatechange = function() {
     if(request.readyState === 4) {
         if (this.readyState === 4 && this.status === 200) {
+            document.getElementById("loader").style.display = "none";
             let myObj = JSON.parse(this.responseText);
             let txt = '<table class="table table-hover table-bordered">' +
                 "<tr>" +
                 "<th>Id</th>" +
                 "<th>Word</th>" +
                 "<th>Hyphenated</th>\n" +
+                "<th>Delete</th>\n" +
                 "</tr>";
             for (let row in myObj) {
                 txt +=

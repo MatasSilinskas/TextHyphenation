@@ -11,7 +11,7 @@ request.onreadystatechange = function() {
     if (request.readyState === 4) {
         if (this.readyState === 4 && this.status === 200) {
             let myObj = JSON.parse(this.responseText);
-            pattern.innerHTML = 'Hyphenated form of word \'' + myObj[0].word + '\' is: ' + myObj[0].hyphenated;
+            pattern.innerHTML = '<span class="bigFont">Hyphenated form of word \'' + myObj[0].word + '\' is: ' + myObj[0].hyphenated + '</span>';
         }
     }
 };

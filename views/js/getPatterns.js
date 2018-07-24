@@ -4,6 +4,7 @@ let request = new XMLHttpRequest();
 request.onreadystatechange = function() {
     if (request.readyState === 4) {
         if (this.readyState === 4 && this.status === 200) {
+            document.getElementById("loader").style.display = "none";
             let myObj = JSON.parse(this.responseText);
             let txt = '<table class="table table-hover table-bordered">' +
                 "<tr>" +
@@ -29,7 +30,12 @@ request.onreadystatechange = function() {
 };
 
 request.open('Get', 'api/patterns');
+request.addEventListener("progress", onDataRetrieval);
 request.send();
+
+function onDataRetrieval (oEvent) {
+    myVar = setTimeout(showPage, 3000);
+}
 
 function deletePattern(pattern){
     let deleteRequest = new XMLHttpRequest();
