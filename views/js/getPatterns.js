@@ -13,29 +13,35 @@ request.onreadystatechange = function() {
                 "<th>Delete</th>" +
                 "<th>Update</th>" +
                 "</tr>";
-            for (let row in myObj) {
+
+            myObj.patterns.forEach(function (pattern) {
                 txt +=
-                    `<tr><td>${myObj[row].id}</td>` +
-                    `<td id='pattern${myObj[row].id}' contenteditable="true">${myObj[row].pattern}</td>` +
-                    `<td><button type="button" class="btn btn-danger" value="${myObj[row].pattern}" ` +
+                    `<tr><td>${pattern.id}</td>` +
+                    `<td id='pattern${pattern.id}' contenteditable="true">${pattern.pattern}</td>` +
+                    `<td><button type="button" class="btn btn-danger" value="${pattern.pattern}" ` +
                     `onclick="deletePattern(this.value)">` + `Delete</button></td>` +
-                    `<td><button type="button" class="btn btn-info" value="${myObj[row].pattern}" ` +
-                    `onclick="updatePattern(this.value, document.getElementById('pattern${myObj[row].id}').innerText)">` + `Update</button></td>` +
+                    `<td><button type="button" class="btn btn-info" value="${pattern.pattern}" ` +
+                    `onclick="updatePattern(this.value, document.getElementById('pattern${pattern.id}').innerText)">` + `Update</button></td>` +
                     `</tr>`;
-            }
+            });
             txt += "</table>";
             patterns.innerHTML = txt;
+
+            let maxPage = Math.ceil(myObj.count / myObj.limit);
+            addPages(maxPage, page);
         }
     }
 };
 
-request.open('Get', 'api/patterns');
-request.addEventListener("progress", onDataRetrieval);
-request.send();
-
-function onDataRetrieval (oEvent) {
-    myVar = setTimeout(showPage, 3000);
+let regex = /page=(\d+)/;
+let pageParams = regex.exec(window.location.href);
+if (pageParams === null) {
+    page = 1;
+} else {
+    page = pageParams[1];
 }
+request.open('Get', 'api/patterns?page=' + page);
+request.send();
 
 function deletePattern(pattern){
     let deleteRequest = new XMLHttpRequest();

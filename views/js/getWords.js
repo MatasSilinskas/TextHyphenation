@@ -13,22 +13,33 @@ request.onreadystatechange = function() {
                 "<th>Hyphenated</th>\n" +
                 "<th>Delete</th>\n" +
                 "</tr>";
-            for (let row in myObj) {
+
+            myObj.words.forEach(function (word) {
                 txt +=
-                    `<tr><td>${myObj[row].id}</td>` +
-                    `<td>${myObj[row].word}</td>` +
-                    `<td>${myObj[row].hyphenated}</td>` +
-                    `<td><button type="button" class="btn btn-danger" value="${myObj[row].word}" ` +
+                    `<tr><td>${word.id}</td>` +
+                    `<td>${word.word}</td>` +
+                    `<td>${word.hyphenated}</td>` +
+                    `<td><button type="button" class="btn btn-danger" value="${word.word}" ` +
                     `onclick="deleteWord(this.value)">` + `Delete</button></td>` +
                     `</tr>`;
-            }
+            });
             txt += "</table>";
             words.innerHTML = txt;
+
+            let maxPage = Math.ceil(myObj.count / myObj.limit);
+            addPages(maxPage, page);
         }
     }
 };
 
-request.open('Get', 'api/words');
+let regex = /page=(\d+)/;
+let pageParams = regex.exec(window.location.href);
+if (pageParams === null) {
+    page = 1;
+} else {
+    page = pageParams[1];
+}
+request.open('Get', 'api/words?page=' + page);
 request.send();
 
 function deleteWord(word){

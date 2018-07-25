@@ -12,6 +12,9 @@ abstract class RESTController
     public const CONFLICT = 409;
     public const INTERNAL_SERVER_ERROR = 500;
 
+    protected const ITEM_LIMIT = 10;
+    protected const DEFAULT_PAGE = 0;
+
     /**
      * RESTController constructor.
      * @param DataConverter $dataConverter
@@ -64,6 +67,22 @@ abstract class RESTController
     }
 
     /**
+     * @return int
+     */
+    protected function getPage(): int
+    {
+        return isset($_GET['page']) ? $_GET['page'] - 1 : self::DEFAULT_PAGE;
+    }
+
+    /**
+     * @return int
+     */
+    protected function getNoOfItems(): int
+    {
+        return isset($_GET['limit']) ? $_GET['limit'] : self::ITEM_LIMIT;
+    }
+
+    /**
      * @param array $keys
      * @param callable $function
      * @return int|null
@@ -73,6 +92,11 @@ abstract class RESTController
         return $this->execute($keys, $function);
     }
 
+    /**
+     * @param array $keys
+     * @param callable $function
+     * @return int|null
+     */
     private function execute(array $keys, callable $function): ?int
     {
         $result = $function($this->getUserParams($keys));

@@ -18,11 +18,11 @@ class Router implements ExecutableInterface
 
     public function execute(): void
     {
-        $uri = $_SERVER['REQUEST_URI'];
+        $uri = explode('/', $_SERVER['REQUEST_URI']);
         $method = $_SERVER['REQUEST_METHOD'];
 
-        if (explode('/', $uri)[2] === 'api') {
-            $className = ucfirst(explode('/', $uri)[3]);
+        if ($uri[2] === 'api') {
+            $className = ucfirst(explode('?', $uri[3])[0]);
             $controller = 'TextHyphenation\\Controllers\\' . $className . 'Controller';
             $repository = 'TextHyphenation\\Database\\' . $className . 'Repository';
             $action = strtolower($method) . 'Action';

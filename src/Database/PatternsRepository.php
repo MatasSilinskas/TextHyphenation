@@ -43,15 +43,31 @@ class PatternsRepository extends Repository
     }
 
     /**
+     * @param int $limit
+     * @param int $pageNum
      * @return array
      */
-    public function getPatterns(): array
+    public function getPatterns(int $limit, int $pageNum): array
     {
         $this->queryBuilder
             ->reset()
-            ->select(['*'])->from(['patterns']);
+            ->select(['*'])->from(['patterns'])
+            ->limit($limit, $pageNum);
 
         return $this->prepareAndExecute();
+    }
+
+    /**
+     * @return int
+     */
+    public function getCount(): int
+    {
+        $this->queryBuilder
+            ->reset()
+            ->count()
+            ->from(['patterns']);
+
+        return $this->prepareAndExecute()[0]['count'];
     }
 
     /**

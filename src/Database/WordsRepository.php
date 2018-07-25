@@ -37,15 +37,31 @@ class WordsRepository extends Repository
     }
 
     /**
+     * @param int $limit
+     * @param int $pageNum
      * @return array
      */
-    public function getWords(): array
+    public function getWords(int $limit, int $pageNum): array
     {
         $this->queryBuilder
             ->reset()
-            ->select(['*'])->from(['words']);
+            ->select(['*'])->from(['words'])
+            ->limit($limit, $pageNum);
 
         return $this->prepareAndExecute();
+    }
+
+    /**
+     * @return int
+     */
+    public function getCount(): int
+    {
+        $this->queryBuilder
+            ->reset()
+            ->count()
+            ->from(['words']);
+
+        return $this->prepareAndExecute()[0]['count'];
     }
 
     /**

@@ -23,13 +23,17 @@ class PatternsController extends RESTController
     public function getAction(): string
     {
         $params = ['id'];
-        if (isset($_GET[$params[0]])) {
+        if (isset($_GET['id'])) {
             return json_encode($this->get($params, function (array $params) {
                 return $this->repository->getPattern($params['id']);
             }));
         }
 
-        return json_encode($this->repository->getPatterns());
+        $data = [];
+        $data['patterns'] = $this->repository->getPatterns($this->getNoOfItems(), $this->getPage());
+        $data['count'] = $this->repository->getCount();
+        $data['limit'] = $this->getNoOfItems();
+        return json_encode($data, true);
     }
 
     public function postAction(): void

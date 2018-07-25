@@ -17,6 +17,12 @@ class QueryBuilder
         return $this;
     }
 
+    public function count(): self
+    {
+        $this->query .= 'SELECT COUNT(*) count ';
+        return $this;
+    }
+
     /**
      * @return QueryBuilder
      */
@@ -91,6 +97,13 @@ class QueryBuilder
             $this->params[$key] = $params[$key];
         }
         $this->query[strlen($this->query) - 1] = ' ';
+        return $this;
+    }
+
+    public function limit(int $limit, int $pageNo): self
+    {
+        $offset = $pageNo * $limit;
+        $this->query .= "LIMIT $limit OFFSET $offset ";
         return $this;
     }
 

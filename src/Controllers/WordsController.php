@@ -31,7 +31,12 @@ class WordsController extends RESTController
                 return $this->repository->getWord($params['id']);
             }));
         }
-        return json_encode($this->repository->getWords());
+
+        $data = [];
+        $data['words'] = $this->repository->getWords($this->getNoOfItems(), $this->getPage());
+        $data['count'] = $this->repository->getCount();
+        $data['limit'] = $this->getNoOfItems();
+        return json_encode($data, true);
     }
 
     public function deleteAction(): void
